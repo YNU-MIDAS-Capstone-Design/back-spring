@@ -1,6 +1,6 @@
 package backend.spring.service;
 
-import backend.spring.domain.User;
+import backend.spring.entity.User;
 import backend.spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

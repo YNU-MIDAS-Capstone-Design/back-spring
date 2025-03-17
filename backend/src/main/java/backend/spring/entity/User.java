@@ -1,4 +1,4 @@
-package backend.spring.domain;
+package backend.spring.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
