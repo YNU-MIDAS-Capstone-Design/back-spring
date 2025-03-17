@@ -1,10 +1,10 @@
 CREATE DATABASE IF NOT EXISTS mydb;
-
 USE mydb;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(100),
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,  -- ✅ 추가: 비밀번호 필드
+    email VARCHAR(100) UNIQUE,  -- ✅ UNIQUE 추가
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

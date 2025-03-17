@@ -16,7 +16,7 @@ public class HelloController {
 
     @GetMapping("/hello")  // GET 요청 매핑
     public ResponseEntity<Map<String, String>> hello(){
-        userService.save();  // UserService 사용
+       // userService.save();  // UserService 사용
         Map<String, String> response = new HashMap<>();
         response.put("message", "Hello from backend!");
         return ResponseEntity.ok(response);

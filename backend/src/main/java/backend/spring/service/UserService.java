@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
-    public void save() {
-        User user = new User("eunseo", "es.naver.com");
-        userRepository.save(user);
-    }
+    //public void save() {
+     //   User user = new User("eunseo", "es.naver.com");
+       // userRepository.save(user);
+    //}
 }
