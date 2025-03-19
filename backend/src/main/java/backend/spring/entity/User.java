@@ -2,30 +2,47 @@ package backend.spring.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
-@Entity(name = "users")
-@Getter //게터로 getId, getTitle, getContent 사용 가능
-@NoArgsConstructor(access = AccessLevel.PROTECTED)//producted타입으로 기본생성자
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Setter
 public class User {
 
-    @Id //기본키로 설정
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT 방식 사용
-    @Column(name = "id", nullable = false)
-    private Long id; //게시물 일련번호
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long user_id;
 
-    @Column(name = "username", nullable = false)
-    private String username; //게시물 제목
+    private String nickname;
+    private String email;
+    private String password;
+    private String location;
+    private String sns;
 
-    @Column(name = "email", nullable = false)
-    private String email; //게시물 내용
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    @Builder
-    public User(String username, String email) {  //빌더 패턴으로 객체 생성
-        this.username = username;
+
+    //사용자 스택
+    //속한 팀
+    //지원한 글
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Project> projectList; //작성한 글
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Project_Like> likeList; //좋아요한 글
+
+    public User(String nickname, String email) {
+        this.nickname = nickname;
         this.email = email;
     }
-
 }
