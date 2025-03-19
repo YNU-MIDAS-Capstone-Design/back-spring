@@ -26,17 +26,17 @@ public class Project {
 	private String description;
 	private String processing;
 	private LocalDateTime start_date;
-	private Integer period;
+	private Integer project_period;
 	private Integer people;
 	private String content;
 
 	private String meet_location;
-	private Integer like;
-	private Integer view;
+	private Integer project_like;
+	private Integer project_view;
 
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false)
-	private LocalDateTime createdAt;
+	private LocalDateTime created_at;
 
 
 	@ManyToOne(fetch = FetchType.LAZY) //작성자 id: 외래 키
@@ -45,7 +45,7 @@ public class Project {
 
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private List<Project_Stack> stackList;//프로젝트 스택
+	private List<ProjectStack> stackList;//프로젝트 스택
 	//지원자들
 	//댓글
 }

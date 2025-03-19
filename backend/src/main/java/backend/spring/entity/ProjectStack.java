@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-public class Project_Stack {
+public class ProjectStack {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class Project_Stack {
 	@JoinColumn(name = "project_id")
 	private Project project;
 
-	public Project_Stack(String stack, Project project){
+	public ProjectStack(String stack, Project project){
 		this.project = project;
 		this.stack = stack;
 	}

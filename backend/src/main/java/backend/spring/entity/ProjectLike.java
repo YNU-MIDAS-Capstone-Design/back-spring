@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @Setter
-public class Project_Like {
+public class ProjectLike {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -30,7 +30,7 @@ public class User {
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
 
     //사용자 스택
@@ -39,7 +39,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Project> projectList; //작성한 글
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Project_Like> likeList; //좋아요한 글
+    private List<ProjectLike> likeList; //좋아요한 글
 
     public User(String nickname, String email) {
         this.nickname = nickname;
