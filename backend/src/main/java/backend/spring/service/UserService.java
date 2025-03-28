@@ -2,8 +2,8 @@ package backend.spring.service;
 
 import backend.spring.domain.TechStack;
 import backend.spring.domain.User;
-import backend.spring.dto.SignupRequest;
-import backend.spring.dto.UserProfileResponse;
+import backend.spring.dto.request.SignupRequest;
+import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,8 +1,8 @@
 package backend.spring.controller;
 
-import backend.spring.dto.AuthRequest;
-import backend.spring.dto.AuthResponse;
-import backend.spring.dto.SignupRequest;
+import backend.spring.dto.request.AuthRequest;
+import backend.spring.dto.response.AuthResponse;
+import backend.spring.dto.request.SignupRequest;
 import backend.spring.service.AuthService;
 import backend.spring.service.UserService;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package backend.spring.service;
 
-import backend.spring.dto.AuthRequest;
-import backend.spring.dto.AuthResponse;
+import backend.spring.dto.request.AuthRequest;
+import backend.spring.dto.response.AuthResponse;
 import backend.spring.jwt.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

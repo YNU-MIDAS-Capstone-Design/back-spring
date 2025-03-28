@@ -1,6 +1,6 @@
 package backend.spring.controller;
 
-import backend.spring.dto.UserProfileResponse;
+import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
