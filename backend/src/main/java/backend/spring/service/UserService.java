@@ -46,6 +46,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public UserProfileResponse getUserProfile(String nickname) {
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -58,6 +59,7 @@ public class UserService {
     }
 
     @Transactional
+
     public UserProfileResponse getMyProfile() {
         String currentNickname = SecurityContextHolder.getContext().getAuthentication().getName();
         return getUserProfile(currentNickname);
