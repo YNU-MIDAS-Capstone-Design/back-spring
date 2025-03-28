@@ -3,29 +3,36 @@ package backend.spring.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users") // ✅ DB 테이블 이름 명확히 지정
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
-    @Column(nullable = false, unique = true) // ✅ 중복 방지
-    private String username;
+    @Column(nullable = false, unique = true)
+    private String nickname;
 
-    @Column(nullable = false) // ✅ NOT NULL 적용
-    private String password;
-
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(updatable = false) // ✅ 수정 불가 필드
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(nullable = false)
+    private String password;
+
+    private String bio;
+
+    private String location;
+
+    private String sns;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TechStack> techStacks = new ArrayList<>();
 }

@@ -1,7 +1,15 @@
 package backend.spring.jwt;
 
+import backend.spring.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -10,42 +18,68 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private static final String SECRET_KEY = "YOUR_SECRET_KEY_CHANGE_THIS_TO_A_SECURE_RANDOM_KEY"; // ✅ 변경 필요!
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // ✅ 1시간
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class); // ✅ 요거 추가!
 
-    private final Key key;
+    @Value("${jwt.secret}")
+    private String secret;
 
-    public JwtTokenProvider() {
-        this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes()); // ✅ 시크릿 키 설정
+    private final CustomUserDetailsService userDetailsService;
+    private Key key;
+
+    public JwtTokenProvider(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
-    // ✅ JWT 토큰 생성
-    public String createToken(String username) {
+    @PostConstruct
+    protected void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    public String createToken(String nickname) {
+        Claims claims = Jwts.claims().setSubject(nickname);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + 1000 * 60 * 60 * 24); // 24시간
+
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // ✅ JWT 토큰 검증
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(getUserNickname(token));
+        return new JwtAuthenticationToken(userDetails, userDetails.getAuthorities());
+    }
+
+    public String getUserNickname(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            log.info("✅ JWT 토큰 유효함");
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("❌ 잘못된 JWT 서명입니다.", e);
+        } catch (ExpiredJwtException e) {
+            log.error("❌ 만료된 JWT 토큰입니다.", e);
+        } catch (UnsupportedJwtException e) {
+            log.error("❌ 지원되지 않는 JWT 토큰입니다.", e);
+        } catch (IllegalArgumentException e) {
+            log.error("❌ JWT 토큰이 잘못되었습니다.", e);
         }
-    }
-
-    // ✅ 토큰에서 사용자 이름 추출
-    public String getUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return false;
     }
 }

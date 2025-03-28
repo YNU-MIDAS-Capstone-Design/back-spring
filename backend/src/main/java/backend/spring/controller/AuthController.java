@@ -1,7 +1,10 @@
 package backend.spring.controller;
 
-import backend.spring.domain.User;
+import backend.spring.dto.AuthRequest;
+import backend.spring.dto.AuthResponse;
+import backend.spring.dto.SignupRequest;
 import backend.spring.service.AuthService;
+import backend.spring.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,22 +13,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
-    // ✅ 회원가입 엔드포인트
     @PostMapping("/signup")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
-        authService.registerUser(user.getUsername(), user.getPassword(), user.getEmail());
-        return ResponseEntity.ok("User registered successfully");
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequest request) {
+        userService.registerUser(request);
+        return ResponseEntity.ok().build();
     }
 
-    // ✅ 로그인 엔드포인트
     @PostMapping("/login")
-    public ResponseEntity<String> authenticateUser(@RequestBody User user) {
-        String token = authService.authenticate(user.getUsername(), user.getPassword());
-        return ResponseEntity.ok(token);
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 }

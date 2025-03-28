@@ -13,10 +13,11 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 
 logging:
   level:
+    backend.spring.jwt: DEBUG
     org.hibernate.sql: debug
     org.springframework.messaging: debug
     org.springframework.web.socket: debug

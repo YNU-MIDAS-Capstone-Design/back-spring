@@ -1,14 +1,27 @@
 package backend.spring.jwt;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collections;
+import java.util.Collection;
 
-public class JwtAuthenticationToken extends UsernamePasswordAuthenticationToken {
+public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
-    public JwtAuthenticationToken(String principal) {
-        super(principal, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+    private final Object principal;
+
+    public JwtAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
+        super(authorities);
+        this.principal = principal;
+        super.setAuthenticated(true);
+    }
+
+    @Override
+    public Object getCredentials() {
+        return null;
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return this.principal;
     }
 }
