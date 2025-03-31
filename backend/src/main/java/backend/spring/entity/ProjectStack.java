@@ -1,5 +1,6 @@
 package backend.spring.entity;
 
+import backend.spring.entity.enums.Stack;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,13 +18,14 @@ public class ProjectStack {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long project_stack_id;
 
-	private String stack;
+	@Enumerated(EnumType.STRING)
+	private Stack stack;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "project_id")
 	private Project project;
 
-	public ProjectStack(String stack, Project project){
+	public ProjectStack(Stack stack, Project project){
 		this.project = project;
 		this.stack = stack;
 	}

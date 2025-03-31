@@ -1,5 +1,7 @@
 package backend.spring.entity;
 
+import backend.spring.entity.enums.Location;
+import backend.spring.entity.enums.Processing;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,21 +24,26 @@ public class Project {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long project_id;
 
-	private String title;
-	private String description;
-	private String processing;
-	private LocalDateTime start_date;
-	private Integer project_period;
-	private Integer people;
-	private String content;
+	private String title; //제목
+	private String description; //요약
 
-	private String meet_location;
-	private Integer project_like;
-	private Integer project_view;
+	@Enumerated(EnumType.STRING)
+	private Processing processing; //모집중 or 모집완료
+
+	private LocalDateTime start_date; //시작날짜
+	private Integer project_period; //기간
+	private Integer people; //모집중인 인원 수
+	private String content; //내용
+
+	@Enumerated(EnumType.STRING)
+	private Location meet_location; //오프라인 만남 장소
+
+	private Integer project_like; //좋아요 수
+	private Integer project_view; //조회수
 
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false)
-	private LocalDateTime created_at;
+	private LocalDateTime created_at; //프로젝트 생성된 날짜
 
 
 	@ManyToOne(fetch = FetchType.LAZY) //작성자 id: 외래 키

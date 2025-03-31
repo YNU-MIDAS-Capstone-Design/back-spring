@@ -2,28 +2,30 @@ package backend.spring.dto.response.view;
 
 import java.util.List;
 
+import backend.spring.dto.object.ViewProjectDto;
 import backend.spring.dto.response.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import backend.spring.common.ResponseCode;
 import backend.spring.common.ResponseMessage;
-import backend.spring.dto.object.ViewProjectData;
 import lombok.Getter;
 
 @Getter
 public class ViewHomeResponseDto extends ResponseDto {
-	private List<ViewProjectData> recent; //추천순
-	private List<ViewProjectData> popular; //인기순
+	List<ViewProjectDto> recent;
+	List<ViewProjectDto> popular;
+	List<ViewProjectDto> recommend;
 
-	private ViewHomeResponseDto(List<ViewProjectData> recent, List<ViewProjectData> popular){
+	private ViewHomeResponseDto(List<ViewProjectDto> recent, List<ViewProjectDto> popular, List<ViewProjectDto> recommend) {
 		super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
 		this.recent = recent;
 		this.popular = popular;
+		this.recommend = recommend;
 	}
 
-	public static ResponseEntity<ViewHomeResponseDto> success(List<ViewProjectData> recent, List<ViewProjectData> popular){
-		ViewHomeResponseDto result = new ViewHomeResponseDto(recent, popular);
+	public static ResponseEntity<ViewHomeResponseDto> success(List<ViewProjectDto> recent, List<ViewProjectDto> popular, List<ViewProjectDto> recommend){
+		ViewHomeResponseDto result = new ViewHomeResponseDto(recent, popular, recommend);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
@@ -31,5 +33,4 @@ public class ViewHomeResponseDto extends ResponseDto {
 		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_PROJECT, ResponseMessage.NOT_EXISTED_PROJECT);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 	}
-
 }
