@@ -34,8 +34,9 @@ public class User {
 
 
     //사용자 스택
-    //속한 팀
     //지원한 글
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<TeamMember> teamList; //속한 팀
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Project> projectList; //작성한 글
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
