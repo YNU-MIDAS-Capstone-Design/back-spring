@@ -1,33 +1,29 @@
 package backend.spring.controller;
 
 import backend.spring.dto.request.AuthRequest;
-import backend.spring.dto.response.AuthResponse;
 import backend.spring.dto.request.SignupRequest;
+import backend.spring.dto.response.LoginResponseDto;
+import backend.spring.dto.response.SignupResponseDto;
 import backend.spring.service.AuthService;
-import backend.spring.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
-    private final UserService userService;
-
-    public AuthController(AuthService authService, UserService userService) {
-        this.authService = authService;
-        this.userService = userService;
-    }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest request) {
-        userService.registerUser(request);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SignupResponseDto> signup(@RequestBody @Valid SignupRequest request) {
+        return authService.signup(request);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid AuthRequest request) {
+        return authService.login(request);
     }
 }
