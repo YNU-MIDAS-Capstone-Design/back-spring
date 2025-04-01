@@ -33,7 +33,7 @@ public class ViewProjectController {
 	 * @param keyword 검색 키워드
 	 * @return ViewProjectResponseDto
 	 */
-	@GetMapping("/project")
+	@GetMapping("/project")   //email로 user 가져와서 추천알고리즘 하는 걸 추가해야함.
 	public ResponseEntity<? super ViewProjectResponseDto> getProject( //required = false 선택적 파라미터
 		@RequestParam(name = "page", defaultValue = "0") int page,
 		@RequestParam(name = "order", required = false, defaultValue = "RECENT") OrderProject order,
@@ -45,7 +45,7 @@ public class ViewProjectController {
 		return viewProjectService.getProjectPage(page, order, process, location, stacks, keyword);
 	}
 
-	@GetMapping("/home")
+	@GetMapping("/home")   //email로 user 가져와서 추천알고리즘 하는 걸 추가해야함.
 	public ResponseEntity<? super ViewHomeResponseDto> getHome(){
 		return viewProjectService.getHomePage();
 	}
