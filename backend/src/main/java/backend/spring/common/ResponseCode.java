@@ -12,6 +12,7 @@ public interface ResponseCode {
     String NOT_EXISTED_USER = "NU";
     String NOT_EXISTED_PROJECT = "NEP";
     String NOT_EXISTED_TEAM = "NET";
+    String NOT_MATCH_USER = "NMU";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";
