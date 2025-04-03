@@ -1,4 +1,4 @@
-package backend.spring.service.view;
+package backend.spring.service.query;
 
 import java.util.List;
 

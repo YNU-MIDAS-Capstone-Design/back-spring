@@ -30,6 +30,7 @@ public class Project {
 	@Enumerated(EnumType.STRING)
 	private Processing processing; //모집중 or 모집완료
 
+	private String required_role;  //여러 개의 모집분야를 하나의 문자열로
 	private LocalDateTime start_date; //시작날짜
 	private Integer project_period; //기간
 	private Integer people; //모집중인 인원 수
@@ -50,6 +51,10 @@ public class Project {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+
+	//팀과의 관계 OneToOne
+	@OneToOne(mappedBy = "project", fetch = FetchType.LAZY)
+	private Team team; //따로 팀 저장, 따로 팀 삭제 해야함
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ProjectStack> stackList;//프로젝트 스택

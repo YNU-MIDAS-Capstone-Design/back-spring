@@ -37,8 +37,10 @@ public class User {
     //지원한 글
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TeamMember> teamList; //속한 팀
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Project> projectList; //작성한 글
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ProjectLike> likeList; //좋아요한 글
 

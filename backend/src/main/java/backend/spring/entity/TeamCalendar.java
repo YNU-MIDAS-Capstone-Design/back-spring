@@ -1,9 +1,6 @@
 package backend.spring.entity;
 
-import backend.spring.entity.enums.Position;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,27 +14,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "team_member")
+@Table(name = "team_calendar")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-public class TeamMember {
+public class TeamCalendar {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long member_id;
+	private Long cal_id;
 
-	private boolean owner;
-
-	@Enumerated(EnumType.STRING)
-	private Position team_role;
+	private String content; //일정 내용
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "team_id")
 	private Team team;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
-
 }

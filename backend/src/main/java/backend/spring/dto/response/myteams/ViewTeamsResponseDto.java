@@ -9,17 +9,15 @@ import backend.spring.common.ResponseCode;
 import backend.spring.common.ResponseMessage;
 import backend.spring.dto.object.ViewTeamDto;
 import backend.spring.dto.response.ResponseDto;
+import lombok.Getter;
 
+@Getter
 public class ViewTeamsResponseDto extends ResponseDto {
 	List<ViewTeamDto> myTeams;
-	Integer totalCount; //전체 팀 수
-	Integer page;  //현재 페이지
 
 	private ViewTeamsResponseDto(List<ViewTeamDto> myTeams, Integer totalCount, Integer page) {
 		super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
 		this.myTeams = myTeams;
-		this.totalCount = totalCount;
-		this.page = page;
 	}
 
 	public static ResponseEntity<ViewTeamsResponseDto> success(List<ViewTeamDto> myTeams, Integer totalCount, Integer page){
@@ -27,13 +25,10 @@ public class ViewTeamsResponseDto extends ResponseDto {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
-	public static ResponseEntity<ResponseDto> not_existed_user(){
-		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-	}
+	//not_existed_user
 
-	public static ResponseEntity<ResponseDto> not_existed_teams(){
-		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_TEAM, ResponseMessage.NOT_EXISTED_TEAM);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+	public static ResponseEntity<ResponseDto> zero_team(){ //들어 있는 팀이 한명도 없을 때
+		ResponseDto result = new ResponseDto(ResponseCode.SUCCESS, "속한 팀이 없습니다.");
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }

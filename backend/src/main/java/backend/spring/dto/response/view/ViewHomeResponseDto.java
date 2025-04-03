@@ -29,8 +29,10 @@ public class ViewHomeResponseDto extends ResponseDto {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
-	public static ResponseEntity<ResponseDto> not_existed_project(){
-		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_PROJECT, ResponseMessage.NOT_EXISTED_PROJECT);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+	//not_existed_user
+
+	public static ResponseEntity<ResponseDto> zero_project(){
+		ResponseDto result = new ResponseDto(ResponseCode.SUCCESS, "프로젝트가 없습니다.");
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }

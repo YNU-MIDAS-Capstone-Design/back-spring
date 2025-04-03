@@ -1,4 +1,4 @@
-package backend.spring.service.view;
+package backend.spring.service.query;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,9 +63,9 @@ public class ViewProjectService {
 				results = getFilteredSortedResults(page, orderSpecifier, filterBuilder); //필터링+정렬
 			}
 
-			// 결과 없으면 not existed 처리
+			// 결과 없으면 처리
 			if (results == null || results.isEmpty()) {
-				return ViewProjectResponseDto.not_existed_project();
+				return ViewProjectResponseDto.zero_project();
 			}
 
 			// 필터링된 프로젝트 개수 조회 쿼리
@@ -95,7 +95,7 @@ public class ViewProjectService {
 				.fetch();
 			// 전체 프로젝트 가져와도 없으면 오류
 			if (recommend == null || recommend.isEmpty()) {
-				return ViewHomeResponseDto.not_existed_project();
+				return ViewHomeResponseDto.zero_project();
 			}
 			//전체 프로젝트 넣어서 추천순으로 정렬후 상위 6개 가져옴
 			List<ViewProjectDto> recommendList = mapToViewProjectDto(recommend);

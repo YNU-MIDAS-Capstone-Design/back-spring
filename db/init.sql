@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS project (
     title VARCHAR(255),
     description VARCHAR(255),
     processing VARCHAR(255),
+    required_role VARCHAR(255),
     start_date DATETIME DEFAULT NULL,
     project_period INT DEFAULT 0,
     people INT DEFAULT 0,
@@ -46,13 +47,15 @@ CREATE TABLE IF NOT EXISTS project_like (
 
 CREATE TABLE IF NOT EXISTS team (
     team_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    team_name VARCHAR(255)
+    team_name VARCHAR(255),
+    project_id BIGINT,
+    FOREIGN KEY (project_id) REFERENCES project(project_id)
 );
 
 CREATE TABLE IF NOT EXISTS team_member (
     member_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     owner BOOLEAN,
-    stacks VARCHAR(255),
+    team_role VARCHAR(255),
     team_id BIGINT,
     user_id BIGINT,
     FOREIGN KEY (team_id) REFERENCES team(team_id),

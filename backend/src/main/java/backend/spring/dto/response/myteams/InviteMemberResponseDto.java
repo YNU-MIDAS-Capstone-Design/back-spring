@@ -9,24 +9,25 @@ import backend.spring.dto.response.ResponseDto;
 import lombok.Getter;
 
 @Getter
-public class TeamNameResponseDto extends ResponseDto {
+public class InviteMemberResponseDto extends ResponseDto {
 
-	private TeamNameResponseDto(){super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);}
+	private InviteMemberResponseDto(){super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);}
 
-	public static ResponseEntity<TeamNameResponseDto> success(){
-		TeamNameResponseDto result = new TeamNameResponseDto();
+	public static ResponseEntity<InviteMemberResponseDto> success(){
+		InviteMemberResponseDto result = new InviteMemberResponseDto();
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
 	//not_existed_user
 
 	public static ResponseEntity<ResponseDto> not_existed_teams(){
-		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_TEAM, ResponseMessage.NOT_EXISTED_TEAM);
+		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_ID, "해당 지원자가 존재하지 않는다.");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-	} //해당 team_id가 존재하지 않는다.
+	} //해당 volunteer_id가 존재하지 않는다.
 
 	public static ResponseEntity<ResponseDto> not_match_user(){  //사용자가 팀장이 아닐때
-	ResponseDto result = new ResponseDto(ResponseCode.NOT_MATCH_USER, ResponseMessage.NOT_MATCH_USER);
+		ResponseDto result = new ResponseDto(ResponseCode.NOT_MATCH_USER, ResponseMessage.NOT_MATCH_USER);
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(result);
 	}
+
 }
