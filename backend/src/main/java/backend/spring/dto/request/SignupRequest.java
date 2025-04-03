@@ -1,5 +1,7 @@
 package backend.spring.dto.request;
 
+import backend.spring.entity.enums.Location;
+import backend.spring.entity.enums.Stack;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +14,7 @@ public class SignupRequest {
     private String email;
     private String password;
     private String bio;
-    private String location;
+    private Location location;
     private String sns;
-    private List<String> techStacks;
+    private List<Stack> techStacks;
 }

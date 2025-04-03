@@ -6,6 +6,7 @@ import backend.spring.dto.request.SignupRequest;
 import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.dto.request.UpdateProfileRequest;
 import backend.spring.dto.response.SignupResponseDto;
+import backend.spring.entity.enums.Stack;
 import backend.spring.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,9 +46,9 @@ public class UserService {
         user.setBio(request.getBio());
 
         List<TechStack> techStacks = new ArrayList<>();
-        for (String name : request.getTechStacks()) {
+        for (Stack stack : request.getTechStacks()) {
             TechStack ts = new TechStack();
-            ts.setName(name);
+            ts.setName(stack);
             ts.setUser(user);
             techStacks.add(ts);
         }
@@ -82,9 +83,9 @@ public class UserService {
         user.getTechStacks().clear();
 
         List<TechStack> newStacks = new ArrayList<>();
-        for (String name : request.getTechStacks()) {
+        for (Stack stack : request.getTechStacks()) {
             TechStack ts = new TechStack();
-            ts.setName(name);
+            ts.setName(stack);
             ts.setUser(user);
             newStacks.add(ts);
         }

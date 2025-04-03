@@ -1,5 +1,6 @@
 package backend.spring.entity;
 
+import backend.spring.entity.enums.Location;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,14 +28,16 @@ public class User {
     private String password;
 
     private String bio;
-    private String location;
+
+    @Enumerated(EnumType.STRING)
+    private Location location;
+
     private String sns;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TechStack> techStacks = new ArrayList<>();
 
-
-    public User(String nickname, String email, String password, String bio, String location, String sns, List<TechStack> techStacks) {
+    public User(String nickname, String email, String password, String bio, Location location, String sns, List<TechStack> techStacks) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -43,7 +46,6 @@ public class User {
         this.sns = sns;
         this.techStacks = techStacks;
     }
-
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
@@ -61,7 +63,7 @@ public class User {
         this.bio = bio;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

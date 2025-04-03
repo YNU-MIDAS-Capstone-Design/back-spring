@@ -17,11 +17,11 @@ public class UserProfileResponse {
     public UserProfileResponse(User user) {
         this.nickname = user.getNickname();
         this.bio = user.getBio();
-        this.location = user.getLocation();
+        this.location = user.getLocation().name();
         this.sns = user.getSns();
         this.techStacks = user.getTechStacks()
                 .stream()
-                .map(stack -> stack.getName())
+                .map(stack -> stack.getName().name()) 
                 .collect(Collectors.toList());
     }
 }
