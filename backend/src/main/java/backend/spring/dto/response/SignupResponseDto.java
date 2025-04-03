@@ -23,8 +23,9 @@ public class SignupResponseDto extends ResponseDto {
                 .body(new SignupResponseDto(ResponseCode.DUPLICATE_EMAIL, ResponseMessage.DUPLICATE_EMAIL));
     }
 
-    public static ResponseEntity<SignupResponseDto> success() {
+    public static ResponseEntity<SignupResponseDto> signupSuccess() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new SignupResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS));
     }
+
 }

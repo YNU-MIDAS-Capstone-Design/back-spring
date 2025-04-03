@@ -1,9 +1,7 @@
-package backend.spring.domain;
+package backend.spring.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -28,15 +27,13 @@ public class User {
     private String password;
 
     private String bio;
-
     private String location;
-
     private String sns;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TechStack> techStacks = new ArrayList<>();
 
-    // 커스텀 생성자 (회원가입용)
+
     public User(String nickname, String email, String password, String bio, String location, String sns, List<TechStack> techStacks) {
         this.nickname = nickname;
         this.email = email;
@@ -47,7 +44,7 @@ public class User {
         this.techStacks = techStacks;
     }
 
-    // 필요한 setter만 직접 정의 (불변성 & 보안 고려)
+
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }

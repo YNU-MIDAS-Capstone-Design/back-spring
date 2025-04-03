@@ -1,14 +1,16 @@
 package backend.spring.service;
 
-import backend.spring.domain.TechStack;
-import backend.spring.domain.User;
+import backend.spring.entity.TechStack;
+import backend.spring.entity.User;
 import backend.spring.dto.request.SignupRequest;
 import backend.spring.dto.object.UserProfileResponse;
+import backend.spring.dto.request.UpdateProfileRequest;
+import backend.spring.dto.response.SignupResponseDto;
 import backend.spring.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,15 @@ public class UserService {
     }
 
     @Transactional
-    public void registerUser(SignupRequest request) {
+    public ResponseEntity<SignupResponseDto> registerUser(SignupRequest request) {
+        if (userRepository.existsByNickname(request.getNickname())) {
+            return SignupResponseDto.duplicateNickname();
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            return SignupResponseDto.duplicateEmail();
+        }
+
         User user = new User();
         user.setNickname(request.getNickname());
         user.setEmail(request.getEmail());
@@ -44,38 +54,35 @@ public class UserService {
         user.setTechStacks(techStacks);
 
         userRepository.save(user);
+        return SignupResponseDto.signupSuccess();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserProfileResponse getUserProfile(String nickname) {
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserProfileResponse(user);
+    }
 
-        List<String> techs = user.getTechStacks().stream()
-                .map(TechStack::getName)
-                .toList();
-
-        return new UserProfileResponse(user.getNickname(), user.getBio(), techs);
+    @Transactional(readOnly = true)
+    public UserProfileResponse getMyProfile(String username) {
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserProfileResponse(user);
     }
 
     @Transactional
-
-    public UserProfileResponse getMyProfile() {
-        String currentNickname = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getUserProfile(currentNickname);
-    }
-
-    @Transactional
-    public void updateMyProfile(String bio, List<String> techStacks) {
-        String nickname = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByNickname(nickname)
+    public void updateMyProfile(UpdateProfileRequest request, String username) {
+        User user = userRepository.findByNickname(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setBio(bio);
+        user.setBio(request.getBio());
+        user.setLocation(request.getLocation());
+        user.setSns(request.getSns());
         user.getTechStacks().clear();
 
         List<TechStack> newStacks = new ArrayList<>();
-        for (String name : techStacks) {
+        for (String name : request.getTechStacks()) {
             TechStack ts = new TechStack();
             ts.setName(name);
             ts.setUser(user);
