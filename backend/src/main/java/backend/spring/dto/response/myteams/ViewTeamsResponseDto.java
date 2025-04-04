@@ -15,13 +15,13 @@ import lombok.Getter;
 public class ViewTeamsResponseDto extends ResponseDto {
 	List<ViewTeamDto> myTeams;
 
-	private ViewTeamsResponseDto(List<ViewTeamDto> myTeams, Integer totalCount, Integer page) {
+	private ViewTeamsResponseDto(List<ViewTeamDto> myTeams) {
 		super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
 		this.myTeams = myTeams;
 	}
 
-	public static ResponseEntity<ViewTeamsResponseDto> success(List<ViewTeamDto> myTeams, Integer totalCount, Integer page){
-		ViewTeamsResponseDto result = new ViewTeamsResponseDto(myTeams, totalCount, page);
+	public static ResponseEntity<ViewTeamsResponseDto> success(List<ViewTeamDto> myTeams){
+		ViewTeamsResponseDto result = new ViewTeamsResponseDto(myTeams);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 

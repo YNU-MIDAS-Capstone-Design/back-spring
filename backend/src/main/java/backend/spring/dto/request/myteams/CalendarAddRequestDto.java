@@ -8,5 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CalendarAddRequestDto {
+	private String cal_date;
 	private String content;
 }

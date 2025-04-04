@@ -1,5 +1,7 @@
 package backend.spring.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,9 +26,16 @@ public class TeamCalendar {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long cal_id;
 
+	private LocalDateTime cal_date; //날짜
 	private String content; //일정 내용
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "team_id")
 	private Team team;
+
+	public TeamCalendar(LocalDateTime cal_date, String content, Team team){
+		this.cal_date = cal_date;
+		this.content = content;
+		this.team = team;
+	}
 }

@@ -56,11 +56,10 @@ public class ViewProjectController {
 
 	//팀원 초대하기
 	@PostMapping("/project/invite/{volunteer_id}")  //지원자(user_id, project_id) -> 팀 멤버(user_id, team_id, owner)
-	public ResponseEntity<InviteMemberResponseDto> inviteMember(
+	public ResponseEntity<? super InviteMemberResponseDto> inviteMember(
 		@PathVariable Long volunteer_id,
-		@AuthenticationPrincipal CustomUserDetails userDetails){ //사용자가 팀장인지 확인후 팀원을 초대
-
+		@AuthenticationPrincipal CustomUserDetails userDetails){ //사용자가 팀장인지 확인 후 팀원을 초대
+		return viewProjectService.inviteMember(volunteer_id, userDetails.getUserId() );
 	}
-
 
 }

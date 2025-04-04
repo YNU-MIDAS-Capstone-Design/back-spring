@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import backend.spring.common.ResponseCode;
 import backend.spring.common.ResponseMessage;
+import backend.spring.dto.object.ViewCalendarDto;
 import backend.spring.dto.response.ResponseDto;
 import lombok.Getter;
 
@@ -14,23 +15,23 @@ import lombok.Getter;
 public class CalendarResponseDto extends ResponseDto {
 	Integer year;
 	Integer month;
-	List<CalendarResponseDto> calendars;
+	List<ViewCalendarDto> calendars;
 
-	private CalendarResponseDto(Integer year, Integer month, List<CalendarResponseDto> calendars){
+	private CalendarResponseDto(Integer year, Integer month, List<ViewCalendarDto> calendars){
 		super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
 		this.year = year;
 		this.month = month;
 		this.calendars = calendars;
 	}
 
-	public static ResponseEntity<CalendarResponseDto> success(Integer year, Integer month, List<CalendarResponseDto> calendars){
+	public static ResponseEntity<CalendarResponseDto> success(Integer year, Integer month, List<ViewCalendarDto> calendars){
 		CalendarResponseDto result = new CalendarResponseDto(year, month, calendars);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
 	//not_existed_user
 
-	public static ResponseEntity<ResponseDto> not_existed_teams(){
+	public static ResponseEntity<ResponseDto> not_existed_team(){
 		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_TEAM, ResponseMessage.NOT_EXISTED_TEAM);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 	} //해당 team_id가 존재하지 않는다.

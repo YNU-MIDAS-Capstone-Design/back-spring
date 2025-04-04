@@ -54,12 +54,21 @@ CREATE TABLE IF NOT EXISTS team (
 
 CREATE TABLE IF NOT EXISTS team_member (
     member_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_name VARCHAR(255),
     owner BOOLEAN,
     team_role VARCHAR(255),
     team_id BIGINT,
     user_id BIGINT,
     FOREIGN KEY (team_id) REFERENCES team(team_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS team_calendar (
+    cal_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cal_date TIMESTAMP,
+    content VARCHAR(255),
+    FOREIGN KEY (team_id) REFERENCES team(team_id)
 );
 
 

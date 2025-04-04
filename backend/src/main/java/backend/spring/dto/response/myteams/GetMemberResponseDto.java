@@ -27,7 +27,7 @@ public class GetMemberResponseDto extends ResponseDto {
 
 	//not_existed_user
 
-	public static ResponseEntity<ResponseDto> not_existed_teams(){
+	public static ResponseEntity<ResponseDto> not_existed_team(){
 		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_TEAM, ResponseMessage.NOT_EXISTED_TEAM);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 	} //해당 team_id가 존재하지 않는다.

@@ -27,6 +27,7 @@ public class TeamMember {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long member_id;
 
+	private String member_name;
 	private boolean owner;
 
 	@Enumerated(EnumType.STRING)
