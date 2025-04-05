@@ -1,11 +1,11 @@
 package backend.spring.service;
 
 import backend.spring.entity.TechStack;
-import backend.spring.entity.User;
 import backend.spring.dto.request.SignupRequest;
 import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.dto.request.UpdateProfileRequest;
 import backend.spring.dto.response.SignupResponseDto;
+import backend.spring.entity.User;
 import backend.spring.entity.enums.Stack;
 import backend.spring.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -37,22 +37,24 @@ public class UserService {
             return SignupResponseDto.duplicateEmail();
         }
 
-        User user = new User();
-        user.setNickname(request.getNickname());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setLocation(request.getLocation());
-        user.setSns(request.getSns());
-        user.setBio(request.getBio());
-
         List<TechStack> techStacks = new ArrayList<>();
+
+        User user = User.builder()
+                .nickname(request.getNickname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .location(request.getLocation())
+                .sns(request.getSns())
+                .bio(request.getBio())
+                .techStacks(techStacks) // 생성 시 빈 리스트 주입
+                .build();
+
         for (Stack stack : request.getTechStacks()) {
             TechStack ts = new TechStack();
             ts.setName(stack);
             ts.setUser(user);
             techStacks.add(ts);
         }
-        user.setTechStacks(techStacks);
 
         userRepository.save(user);
         return SignupResponseDto.signupSuccess();

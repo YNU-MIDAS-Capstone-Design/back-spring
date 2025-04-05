@@ -10,8 +10,10 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -36,42 +38,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TechStack> techStacks = new ArrayList<>();
-
-    public User(String nickname, String email, String password, String bio, Location location, String sns, List<TechStack> techStacks) {
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
-        this.bio = bio;
-        this.location = location;
-        this.sns = sns;
-        this.techStacks = techStacks;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public void setSns(String sns) {
-        this.sns = sns;
-    }
-
-    public void setTechStacks(List<TechStack> techStacks) {
-        this.techStacks = techStacks;
-    }
 }

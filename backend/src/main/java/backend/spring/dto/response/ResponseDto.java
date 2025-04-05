@@ -22,4 +22,5 @@ public class ResponseDto {
     public static ResponseEntity<ResponseDto> success() {
         return ResponseEntity.ok(new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS));
     }
+
 }
