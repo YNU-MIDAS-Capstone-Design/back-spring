@@ -11,20 +11,23 @@ public enum Stack {
     NestJS,
     MySQL,
     MongoDB,
+    Docker,
+    AWS,
     //프론트
     JavaScript,
     HTML,
     CSS,
     React,
     Vue,
+    //디자이너
+    Figma,
+    Illustrator,
+    Adobe_XD,
     //모바일 앱
     Android,
     Kotlin,
     Swift,
     Flutter,
-    //배포
-    Docker,
-    AWS,
     //인공지능
     Python,
     AI,
