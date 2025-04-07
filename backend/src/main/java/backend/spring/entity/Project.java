@@ -60,4 +60,10 @@ public class Project {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ProjectLike> likeList; //좋아요한 글
 
+
+	public Project(String title, String content){
+		this.title = title;
+		this.content = content;
+	}
+
 }

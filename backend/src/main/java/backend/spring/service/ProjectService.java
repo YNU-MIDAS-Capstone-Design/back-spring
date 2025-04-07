@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import backend.spring.dto.request.project.*;
 import backend.spring.dto.response.project.*;
@@ -21,22 +22,29 @@ public class ProjectService {
     private final ProjectCommentRepository projectCommentRepository;
     private final ProjectLikeRepository projectLikeRepository;
 
-    @Override
     public ResponseEntity<? super PostProjectResponseDto> postProject(PostProjectRequestDto dto, long userId) {
         try {
-            boolean existedUser = userRepository.existsByUserId(userId);
-            if (!existedUser) return PostProjectResponseDto.notExistUser();
+            // 1. 사용자 존재 여부 확인
+            Optional<User> optionalUser = userRepository.findById(userId);
+            if (optionalUser.isEmpty()) {
+                return PostProjectCommentResponseDto.noExistUser();
+            }
+            User user = optionalUser.get();
 
-            Project projectEntity = new Project(dto, userId);
-            projectRepository.save(projectEntity);
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            // 2. 프로젝트 객체 생성 및 설정
+            Project project = new Project(dto.getTitle(), dto.getContent());
+
+            // 저장
+            projectRepository.save(project);
+
+            return PostProjectResponseDto.success();
+        } catch (Exception e) {
+            e.printStackTrace(); // 서버 로그 확인용
             return ResponseDto.databaseError();
         }
-        return PostProjectResponseDto.success();
     }
 
-    @Override
+
     public ResponseEntity<? super PutProjectLikeResponseDto> putProjectLike(Integer projectId, long userId) {
         try {
             boolean existedUser = userRepository.existsByUserId(userId);
@@ -65,7 +73,7 @@ public class ProjectService {
         return PutProjectLikeResponseDto.success();
     }
 
-    @Override
+
     public ResponseEntity<? super GetProjectCommentListResponseDto> getProjectCommentList(Integer projectId) {
         List<GetProjectCommentListResultSet> resultSets = new ArrayList<>();
         try {
@@ -80,7 +88,7 @@ public class ProjectService {
         return GetProjectCommentListResponseDto.success(resultSets);
     }
 
-    @Override
+
     public ResponseEntity<? super DeleteProjectResponseDto> deleteProject(Integer projectId) {
         try {
             ProjectEntity projectEntity = projectRepository.findByProjectId(projectId);
@@ -99,7 +107,7 @@ public class ProjectService {
         return DeleteProjectResponseDto.success();
     }
 
-    @Override
+
     public ResponseEntity<? super PostProjectCommentResponseDto> postProjectComment(PostProjectCommentRequestDto dto, long userId) {
         try {
             ProjectEntity projectEntity = projectRepository.findByProjectId(dto.getProjectId());
