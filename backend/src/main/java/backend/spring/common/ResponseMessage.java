@@ -7,7 +7,9 @@ public interface ResponseMessage {
 
     // HTTP Status 400
     String VALUDATION_FAILED = "Validation Failed";
-    String DUPLICATE_EMAIL = "Duplicate email";
+    String DUPLICATE_EMAIL = "Duplicate email " +
+            "" +
+            "";
     String DUPLICATE_NICKNAME = "Duplicate nickname";
     String NOT_EXISTED_USER = "This user does not exist";
     String NOT_EXISTED_PROJECT = "This project does not exist.";
@@ -18,6 +20,7 @@ public interface ResponseMessage {
     // HTTP Status 401
     String SIGN_IN_FAIL = "Login information mismatch.";
     String AUTHORIZATION_FAIL = "Authorization Failed.";
+    String LOGIN_FAIL = "Login failed";
 
     // HTTP Status 403
     String NO_PERMISSTION = "Do not have permission.";
