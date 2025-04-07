@@ -1,9 +1,8 @@
 package backend.spring.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import backend.spring.entity.ProjectEntity;
+import backend.spring.entity.Project;
 
-@Repository
-public interface ProjectRepository extends JpaRepository<Project, Integer>{
+public interface ProjectRepository extends JpaRepository<Project, Long> {
     boolean existsByProjectId(int projectId);
 }

@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProjectCommentListItem{
     private long userId;
     private String nickname;

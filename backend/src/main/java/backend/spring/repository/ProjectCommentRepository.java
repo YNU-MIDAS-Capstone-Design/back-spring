@@ -1,15 +1,10 @@
 package backend.spring.repository;
 
-import backend.spring.entity.ProjectCommentEntity;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import backend.spring.entity.ProjectComment;
 
-import java.util.List;
-
-@Repository
-public interface ProjectCommentRepository extends JpaRepository<ProjectCommentEntity, Integer> {
+public interface ProjectCommentRepository extends JpaRepository<ProjectComment, Long> {
 
     @Query(
             value =

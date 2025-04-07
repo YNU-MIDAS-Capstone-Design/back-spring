@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.ArrayList;
 
 import backend.spring.dto.request.project.*;
@@ -15,7 +14,7 @@ import backend.spring.repository.*;
 
 @Service
 @RequiredArgsConstructor
-public class ProjectService implements ProjectService {
+public class ProjectService {
 
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;

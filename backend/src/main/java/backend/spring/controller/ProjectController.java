@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping; //기존 import
 import org.springframework.web.bind.annotation.RestController; //기존 import
 import org.springframework.web.bind.annotation.*;
 
+import backend.spring.service.ProjectService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/project")
 public class ProjectController{
     private final ProjectService projectService;
