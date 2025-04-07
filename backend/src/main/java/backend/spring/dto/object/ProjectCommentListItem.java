@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.ArrayList;
 import backend.spring.repository.resultSet.GetProjectCommentListResultSet;
 
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

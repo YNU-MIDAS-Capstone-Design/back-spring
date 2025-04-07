@@ -22,7 +22,6 @@ public class ProjectServiceImplement implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectCommentRepository projectCommentRepository;
     private final ProjectLikeRepository projectLikeRepository;
-    private final ImageRepository imageRepository;
 
     @Override
     public ResponseEntity<? super PostProjectResponseDto> postProject(PostProjectRequestDto dto, long userId) {
@@ -106,7 +105,6 @@ public class ProjectServiceImplement implements ProjectService {
             // writer 체크 생략 (userId 받아야 함)
             projectLikeRepository.deleteByProjectId(projectId);
             projectCommentRepository.deleteByProjectId(projectId);
-            imageRepository.deleteByProjectId(projectId);
             projectRepository.delete(projectEntity);
 
         } catch (Exception exception) {
