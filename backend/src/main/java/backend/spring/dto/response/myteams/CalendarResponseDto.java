@@ -37,7 +37,7 @@ public class CalendarResponseDto extends ResponseDto {
 	} //해당 team_id가 존재하지 않는다.
 
 	public static ResponseEntity<ResponseDto> not_existed_content(){
-		ResponseDto result = new ResponseDto(ResponseCode.SUCCESS, "일정이 존재하지 않습니다.");
+		ResponseDto result = new ResponseDto(ResponseCode.EMPTY_RESULT, "일정이 존재하지 않습니다.");
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 

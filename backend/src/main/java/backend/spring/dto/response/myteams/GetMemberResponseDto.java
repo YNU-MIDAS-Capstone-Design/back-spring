@@ -33,7 +33,7 @@ public class GetMemberResponseDto extends ResponseDto {
 	} //해당 team_id가 존재하지 않는다.
 
 	public static ResponseEntity<ResponseDto> zero_member(){ //팀원이 한 명도 없을 때
-		ResponseDto result = new ResponseDto(ResponseCode.SUCCESS, "팀원이 존재하지 않습니다.");
+		ResponseDto result = new ResponseDto(ResponseCode.EMPTY_RESULT, "팀원이 존재하지 않습니다.");
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }

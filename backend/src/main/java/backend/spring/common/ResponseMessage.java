@@ -3,6 +3,7 @@ package backend.spring.common;
 public interface ResponseMessage {
     // HTTP Status 200
     String SUCCESS = "Success.";
+    String EMPTY_RESULT = "Empty result.";
 
     // HTTP Status 400
     String VALUDATION_FAILED = "Validation Failed";

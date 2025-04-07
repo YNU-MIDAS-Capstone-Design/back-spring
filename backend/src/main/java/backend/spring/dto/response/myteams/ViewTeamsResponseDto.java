@@ -28,7 +28,7 @@ public class ViewTeamsResponseDto extends ResponseDto {
 	//not_existed_user
 
 	public static ResponseEntity<ResponseDto> zero_team(){ //들어 있는 팀이 한명도 없을 때
-		ResponseDto result = new ResponseDto(ResponseCode.SUCCESS, "속한 팀이 없습니다.");
+		ResponseDto result = new ResponseDto(ResponseCode.EMPTY_RESULT, "속한 팀이 없습니다.");
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }

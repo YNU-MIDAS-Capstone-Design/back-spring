@@ -4,6 +4,7 @@ public interface ResponseCode {
 
     // HTTP Status 200
     String SUCCESS = "SU";
+    String EMPTY_RESULT = "ER";
 
     // HTTP Status 400
     String VALUDATION_FAILED = "VF";
