@@ -4,12 +4,20 @@ USE mydb;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nickname VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
+    nickname VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    bio VARCHAR(255),
     location VARCHAR(255),
     sns VARCHAR(255),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_tech_stacks (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tech_stack VARCHAR(100) NOT NULL,
+    user_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS project (

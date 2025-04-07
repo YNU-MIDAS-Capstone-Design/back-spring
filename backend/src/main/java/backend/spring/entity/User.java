@@ -1,5 +1,6 @@
 package backend.spring.entity;
 
+import backend.spring.entity.enums.Location;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,21 +22,36 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
+    private Long userId;
 
+    @Column(nullable = false, unique = true)
     private String nickname;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
-    private String location;
+
+    private String bio;
+
+    @Enumerated(EnumType.STRING)
+    private Location location;
+
     private String sns;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime created_at;
 
-
-    //사용자 스택
     //지원한 글
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TechStack> techStacks = new ArrayList<>(); //사용자 스택
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ProjectComment> commentList; //속한 팀
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TeamMember> teamList; //속한 팀
 

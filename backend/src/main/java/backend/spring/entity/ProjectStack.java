@@ -16,13 +16,13 @@ public class ProjectStack {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long project_stack_id;
+	private Long project_stackId;
 
 	@Enumerated(EnumType.STRING)
 	private Stack stack;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "project_id")
+	@JoinColumn(name = "projectId")
 	private Project project;
 
 	public ProjectStack(Stack stack, Project project){

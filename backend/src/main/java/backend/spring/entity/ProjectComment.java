@@ -1,9 +1,11 @@
 package backend.spring.entity;
 
-import backend.spring.entity.enums.Position;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,28 +19,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "team_member")
+@Table(name = "project_comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-public class TeamMember {
+public class ProjectComment {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long memberId;
+	private Long commentId;
 
-	private String member_name;
-	private boolean owner;
-
-	@Enumerated(EnumType.STRING)
-	private Position team_role;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "teamId")
-	private Team team;
+	private String message;
+	@CreationTimestamp
+	@Column(nullable = false, updatable = false)
+	private LocalDateTime created_at; //댓글 생성 날짜
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "projectId")
+	private Project project;
+
+	@ManyToOne(fetch = FetchType.LAZY) //작성자 id: 외래 키
 	@JoinColumn(name = "userId")
 	private User user;
-
 }

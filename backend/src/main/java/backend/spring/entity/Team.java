@@ -25,14 +25,9 @@ public class Team {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long team_id;
+	private Long teamId;
 
 	private String team_name;
-
-	//외래 키
-	@OneToOne //null도 선택적으로 가능
-	@JoinColumn(name = "project_id", nullable = true)
-	private Project project;
 
 
 	@OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE, orphanRemoval = true)

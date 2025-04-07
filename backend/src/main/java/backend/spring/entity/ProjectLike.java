@@ -15,13 +15,13 @@ public class ProjectLike {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long like_id;
+	private Long likeId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "project_id")
+	@JoinColumn(name = "projectId")
 	private Project project;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "userId")
 	private User user;
 }
