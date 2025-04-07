@@ -39,7 +39,7 @@ public class TeamController {
 	@Operation(
 		summary = "팀 페이지 불러오기",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "SU: 성공, 속한 팀이 없습니다",
+			@ApiResponse(responseCode = "200", description = "성공(SU), 속한 팀이 없습니다(ER)",
 				content = @Content(schema = @Schema(implementation = ViewTeamsResponseDto.class))),
 			@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
@@ -86,7 +86,7 @@ public class TeamController {
 	@Operation(
 		summary = "팀 멤버 불러오기",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "SU: 성공, 팀원이 존재하지 않음",
+			@ApiResponse(responseCode = "200", description = "성공(SU), 팀원이 존재하지 않음(ER)",
 				content = @Content(schema = @Schema(implementation = GetMemberResponseDto.class))),
 			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀(NET), 존재하지 않는 사용자(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
@@ -140,7 +140,7 @@ public class TeamController {
 			)
 		),
 		responses = {
-			@ApiResponse(responseCode = "200", description = "SU: 성공, 일정이 존재하지 않음",
+			@ApiResponse(responseCode = "200", description = "성공(SU), 일정이 존재하지 않음(ER)",
 				content = @Content(schema = @Schema(implementation = CalendarResponseDto.class))),
 			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀(NET), 존재하지 않는 사용자(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class)))

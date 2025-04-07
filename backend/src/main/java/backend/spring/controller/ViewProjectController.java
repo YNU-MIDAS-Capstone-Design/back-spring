@@ -42,7 +42,7 @@ public class ViewProjectController {
 	@Operation(
 		summary = "프로젝트 페이지 불러오기",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "성공",
+			@ApiResponse(responseCode = "200", description = "성공(SU), 프로젝트가 없음(ER)",
 				content = @Content(schema = @Schema(implementation = ViewProjectResponseDto.class))),
 			@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
@@ -64,7 +64,7 @@ public class ViewProjectController {
 	@Operation(
 		summary = "프로젝트 페이지 불러오기",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "성공",
+			@ApiResponse(responseCode = "200", description = "성공(SU), 프로젝트가 없음(ER)",
 				content = @Content(schema = @Schema(implementation = ViewHomeResponseDto.class))),
 			@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
