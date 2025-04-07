@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS project_comment(
     user_id BIGINT,
     FOREIGN KEY (project_id) REFERENCES project(project_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
-)
+);
 
 CREATE TABLE IF NOT EXISTS team (
     team_id BIGINT AUTO_INCREMENT PRIMARY KEY,
