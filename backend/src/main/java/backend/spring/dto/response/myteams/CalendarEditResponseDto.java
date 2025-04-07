@@ -29,8 +29,10 @@ public class CalendarEditResponseDto extends ResponseDto{
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 	} //해당 cal_id(일정)이 존재하지 않는다. (delete, modify)
 
-	public static ResponseEntity<ResponseDto> not_match_user(){  //사용자가 팀원이 아닐때
-		ResponseDto result = new ResponseDto(ResponseCode.NOT_MATCH_USER, ResponseMessage.NOT_MATCH_USER);
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(result);
-	}
+	// public static ResponseEntity<ResponseDto> not_match_user(){  //사용자가 팀원이 아닐때
+	// 	ResponseDto result = new ResponseDto(ResponseCode.NOT_MATCH_USER, ResponseMessage.NOT_MATCH_USER);
+	// 	return ResponseEntity.status(HttpStatus.FORBIDDEN).body(result);
+	// }
+
+	//missing_required_data  (add, modify)
 }

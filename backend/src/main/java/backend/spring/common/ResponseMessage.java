@@ -12,6 +12,7 @@ public interface ResponseMessage {
     String NOT_EXISTED_PROJECT = "This project does not exist.";
     String NOT_EXISTED_TEAM = "This team does not exist.";
     String NOT_EXISTED_ID = "This ID does not exist.";
+    String MISSING_REQUIRED_DATA = "A required data is missing.";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "Login information mismatch.";

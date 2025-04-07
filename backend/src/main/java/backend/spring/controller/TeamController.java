@@ -39,9 +39,9 @@ public class TeamController {
 	@Operation(
 		summary = "팀 페이지 불러오기",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "불러오기 성공",
+			@ApiResponse(responseCode = "200", description = "SU: 성공, 속한 팀이 없습니다",
 				content = @Content(schema = @Schema(implementation = ViewTeamsResponseDto.class))),
-			@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자",
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
 		}
 	)
@@ -64,11 +64,11 @@ public class TeamController {
 			)
 		),
 		responses = {
-			@ApiResponse(responseCode = "200", description = "팀 이름 변경 성공",
+			@ApiResponse(responseCode = "200", description = "성공",
 				content = @Content(schema = @Schema(implementation = TeamNameResponseDto.class))),
-			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀, 존재하지 않는 사용자",
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀(NET), 존재하지 않는 사용자(NU), 수정할 데이터가 null(MRD)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
-			@ApiResponse(responseCode = "403", description = "팀장이 아님",
+			@ApiResponse(responseCode = "403", description = "팀장이 아님(NMU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class)))
 		}
 	)
@@ -86,9 +86,9 @@ public class TeamController {
 	@Operation(
 		summary = "팀 멤버 불러오기",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "성공",
+			@ApiResponse(responseCode = "200", description = "SU: 성공, 팀원이 존재하지 않음",
 				content = @Content(schema = @Schema(implementation = GetMemberResponseDto.class))),
-			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀, 존재하지 않는 사용자",
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀(NET), 존재하지 않는 사용자(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
 		}
 	)
@@ -111,11 +111,11 @@ public class TeamController {
 			)
 		),
 		responses = {
-			@ApiResponse(responseCode = "200", description = "스택 변경 성공",
+			@ApiResponse(responseCode = "200", description = "성공(SU)",
 				content = @Content(schema = @Schema(implementation = MemberStackResponseDto.class))),
-			@ApiResponse(responseCode = "400", description = "팀원이 존재하지 않음",
+			@ApiResponse(responseCode = "400", description = "해당 팀원이 존재하지 않음(NEI), 수정할 데이터가 null(MRD)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
-			@ApiResponse(responseCode = "403", description = "해당 팀원이 아님",
+			@ApiResponse(responseCode = "403", description = "해당 팀원과 사용자가 일치하지 않음(NMU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class)))
 		}
 	)
@@ -140,9 +140,9 @@ public class TeamController {
 			)
 		),
 		responses = {
-			@ApiResponse(responseCode = "200", description = "팀 일정 불러오기 성공",
+			@ApiResponse(responseCode = "200", description = "SU: 성공, 일정이 존재하지 않음",
 				content = @Content(schema = @Schema(implementation = CalendarResponseDto.class))),
-			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀, 존재하지 않는 사용자",
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀(NET), 존재하지 않는 사용자(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class)))
 		}
 	)
@@ -166,9 +166,9 @@ public class TeamController {
 			)
 		),
 		responses = {
-			@ApiResponse(responseCode = "200", description = "팀 일정 추가 성공",
+			@ApiResponse(responseCode = "200", description = "성공(SU)",
 				content = @Content(schema = @Schema(implementation = CalendarEditResponseDto.class))),
-			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀, 존재하지 않는 사용자",
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀(NET), 존재하지 않는 사용자(NU), 수정할 데이터가 null(MRD)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class)))
 		}
 	)
@@ -187,9 +187,9 @@ public class TeamController {
 	@Operation(
 		summary = "팀 일정 삭제",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "팀 일정 삭제 성공",
+			@ApiResponse(responseCode = "200", description = "성공",
 				content = @Content(schema = @Schema(implementation = CalendarEditResponseDto.class))),
-			@ApiResponse(responseCode = "400", description = "존재하지 않는 일정, 존재하지 않는 사용자",
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 일정(NEI), 존재하지 않는 사용자(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class)))
 		}
 	)
@@ -213,9 +213,9 @@ public class TeamController {
 			)
 		),
 		responses = {
-			@ApiResponse(responseCode = "200", description = "팀 일정 수정 성공",
+			@ApiResponse(responseCode = "200", description = "성공",
 				content = @Content(schema = @Schema(implementation = CalendarEditResponseDto.class))),
-			@ApiResponse(responseCode = "400", description = "존재하지 않는 일정, 존재하지 않는 사용자",
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 일정(NEI), 존재하지 않는 사용자(NU), 수정할 데이터가 null(MRD)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class)))
 		}
 	)

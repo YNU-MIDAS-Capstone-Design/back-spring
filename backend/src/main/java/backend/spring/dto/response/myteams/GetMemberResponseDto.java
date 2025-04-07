@@ -31,4 +31,9 @@ public class GetMemberResponseDto extends ResponseDto {
 		ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_TEAM, ResponseMessage.NOT_EXISTED_TEAM);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 	} //해당 team_id가 존재하지 않는다.
+
+	public static ResponseEntity<ResponseDto> zero_member(){ //팀원이 한 명도 없을 때
+		ResponseDto result = new ResponseDto(ResponseCode.SUCCESS, "팀원이 존재하지 않습니다.");
+		return ResponseEntity.status(HttpStatus.OK).body(result);
+	}
 }

@@ -29,4 +29,6 @@ public class TeamNameResponseDto extends ResponseDto {
 	ResponseDto result = new ResponseDto(ResponseCode.NOT_MATCH_USER, ResponseMessage.NOT_MATCH_USER);
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(result);
 	}
+
+	//missing_required_data
 }

@@ -23,4 +23,9 @@ public class ResponseDto {
         ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
+
+    public static ResponseEntity<ResponseDto> missing_required_data(){
+        ResponseDto result = new ResponseDto(ResponseCode.MISSING_REQUIRED_DATA, ResponseMessage.MISSING_REQUIRED_DATA);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+    }
 }

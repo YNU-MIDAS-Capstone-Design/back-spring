@@ -13,6 +13,7 @@ public interface ResponseCode {
     String NOT_EXISTED_PROJECT = "NEP";
     String NOT_EXISTED_TEAM = "NET";
     String NOT_EXISTED_ID = "NEI";
+    String MISSING_REQUIRED_DATA = "MRD";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";
