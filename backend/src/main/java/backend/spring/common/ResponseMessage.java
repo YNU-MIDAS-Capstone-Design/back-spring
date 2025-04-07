@@ -16,7 +16,7 @@ public interface ResponseMessage {
     String AUTHORIZATION_FAIL = "Authorization Failed.";
 
     // HTTP Status 403
-    String NO_PERMISSTION = "Do not have permission.";
+    String NO_PERMISSION = "Do not have permission.";  //오타있음.
 
     // HTTP Status 500
     String DATABASE_ERROR = "Datatbase error.";

@@ -17,7 +17,7 @@ public interface ResponseCode {
     String AUTHORIZATION_FAIL = "AF";
 
     // HTTP Status 403
-    String NO_PERMISSTION = "NP";
+    String NO_PERMISSION = "NP"; //오타있음
 
     // HTTP Status 500
     String DATABASE_ERROR = "DBE";
