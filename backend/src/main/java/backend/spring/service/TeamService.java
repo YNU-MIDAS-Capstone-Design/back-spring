@@ -99,6 +99,9 @@ public class TeamService {
 				return TeamNameResponseDto.not_match_user();
 			}
 
+			// if(dto.getTeamName().isEmpty()){
+			// 	//null값 처리
+			// }
 			team.setTeam_name(dto.getTeamName()); //팀 명을 변경
 
 			return TeamNameResponseDto.success();
@@ -122,6 +125,9 @@ public class TeamService {
 			Team team = options.get(); //팀이 존재하는지 확인
 
 			List<TeamMember> memberList = teamMemberRepository.findAllByTeam(team);
+			// if(memberList.isEmpty()) {
+			// 	//null값 처리
+			// }
 
 			List<ViewMemberDto> members = new ArrayList<>();
 			for(TeamMember member : memberList){
@@ -163,6 +169,9 @@ public class TeamService {
 				return MemberStackResponseDto.not_match_user();
 			}
 
+			// if(dto.getTeam_role() == null){
+			// 	//null값 처리
+			// }
 			member.setTeam_role(dto.getTeam_role());//팀 역할을 바꿈
 
 			return MemberStackResponseDto.success();
@@ -230,6 +239,9 @@ public class TeamService {
 			}
 			Team team = options.get(); //팀이 존재하는지 확인
 
+			// if(dto.getCal_date() == null || dto.getCal_date().isEmpty()){
+			// 	//null값 처리
+			// }
 			LocalDateTime date = LocalDateTime.parse(dto.getCal_date(), formatter);
 			TeamCalendar new_cal = new TeamCalendar(date, dto.getContent(), team);
 			teamCalendarRepository.save(new_cal); //새로운 일정 저장
@@ -254,6 +266,9 @@ public class TeamService {
 			}
 			TeamCalendar calendar = options.get(); //일정이 존재하는지 확인
 
+			// if(dto.getCal_date() == null || dto.getCal_date().isEmpty()){
+			// 	//null값 처리
+			// }
 			LocalDateTime date = LocalDateTime.parse(dto.getCal_date(), formatter);
 			calendar.setCal_date(date);
 			calendar.setContent(dto.getContent());  //일정 수정
@@ -285,6 +300,5 @@ public class TeamService {
 			return ResponseDto.databaseError();
 		}
 	}
-
 
 }
