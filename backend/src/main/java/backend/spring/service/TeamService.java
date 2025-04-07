@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -62,7 +61,7 @@ public class TeamService {
 			List<ViewTeamDto> teamList = new ArrayList<>();
 			for(TeamMember member : teamMemberList){
 				Team team = member.getTeam();
-				ViewTeamDto viewTeam = new ViewTeamDto(team.getTeam_id(), team.getTeam_name(), member.isOwner() );
+				ViewTeamDto viewTeam = new ViewTeamDto(team.getTeamId(), team.getTeamName(), member.isOwner() );
 				teamList.add(viewTeam);
 			}
 			return ViewTeamsResponseDto.success(teamList);
@@ -94,7 +93,7 @@ public class TeamService {
 			boolean owner = true;
 			List<TeamMember> teamMemberList = teamMemberRepository.findAllByUser(user);
 			for(TeamMember member : teamMemberList){
-				if(member.getTeam().getTeam_id().equals(team_id) && member.isOwner()){
+				if(member.getTeam().getTeamId().equals(team_id) && member.isOwner()){
 					owner = false; //팀장이 맞다면 false
 					break;
 				}
@@ -102,7 +101,7 @@ public class TeamService {
 			if(owner){ //팀장과 매칭하지 않을 때
 				return TeamNameResponseDto.not_match_user();
 			}
-			team.setTeam_name(dto.getTeamName()); //팀 명을 변경
+			team.setTeamName(dto.getTeamName()); //팀 명을 변경
 
 			return TeamNameResponseDto.success();
 		}catch(Exception e){
@@ -131,7 +130,7 @@ public class TeamService {
 
 			List<ViewMemberDto> members = new ArrayList<>();
 			for(TeamMember member : memberList){
-				ViewMemberDto mem = new ViewMemberDto(member.getMember_id(), member.getMember_name(), member.isOwner(), member.getTeam_role());
+				ViewMemberDto mem = new ViewMemberDto(member.getMemberId(), member.getMemberName(), member.isOwner(), member.getTeamRole());
 				members.add(mem);
 			}
 			return GetMemberResponseDto.success(members);
@@ -164,7 +163,7 @@ public class TeamService {
 			List<TeamMember> teamList = teamMemberRepository.findAllByUser(user);
 			boolean mem = true;
 			for(TeamMember teamMember : teamList){
-				if(teamMember.getMember_id().equals(member_id)){
+				if(teamMember.getMemberId().equals(member_id)){
 					mem = false;
 					break;
 				}
@@ -172,7 +171,7 @@ public class TeamService {
 			if(mem){
 				return MemberStackResponseDto.not_match_user();
 			}
-			member.setTeam_role(dto.getTeam_role());//팀 역할 변경
+			member.setTeamRole(dto.getTeam_role());//팀 역할 변경
 
 			return MemberStackResponseDto.success();
 		} catch(Exception e){
@@ -204,7 +203,7 @@ public class TeamService {
 			int month = dto.getMonth();
 			List<TeamCalendar> filteredCalendars = calendars.stream()
 				.filter(calendar -> {
-					LocalDateTime date = calendar.getCal_date();
+					LocalDateTime date = calendar.getCalDate();
 					return date.getYear() == year && date.getMonthValue() == month;
 				})
 				.toList();
@@ -214,8 +213,8 @@ public class TeamService {
 
 			List<ViewCalendarDto> dates = new ArrayList<>();
 			for(TeamCalendar cal : filteredCalendars){
-				String cal_date = cal.getCal_date().format(formatter);
-				ViewCalendarDto view_cal = new ViewCalendarDto(cal.getCal_id(), cal_date, cal.getContent());
+				String cal_date = cal.getCalDate().format(formatter);
+				ViewCalendarDto view_cal = new ViewCalendarDto(cal.getCalId(), cal_date, cal.getContent());
 				dates.add(view_cal);
 			}
 
@@ -271,7 +270,7 @@ public class TeamService {
 			}
 			TeamCalendar calendar = options.get(); //일정이 존재하는지 확인
 			LocalDateTime date = LocalDateTime.parse(dto.getCal_date(), formatter);
-			calendar.setCal_date(date);
+			calendar.setCalDate(date);
 			calendar.setContent(dto.getContent());  //일정 수정
 
 			return CalendarEditResponseDto.success();

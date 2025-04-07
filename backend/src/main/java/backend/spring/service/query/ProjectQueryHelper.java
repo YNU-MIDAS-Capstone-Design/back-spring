@@ -26,7 +26,7 @@ public class ProjectQueryHelper {
 			case RECENT:
 				return project.created_at.desc();
 			case POPULAR:
-				return project.project_view.desc();
+				return project.viewCount.desc();
 			default:
 				return project.created_at.desc();
 		}

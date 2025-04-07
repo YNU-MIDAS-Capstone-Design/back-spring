@@ -19,7 +19,7 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> success() {
+    public static ResponseEntity<ResponseDto> successResponse() {
         return ResponseEntity.ok(new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS));
     }
 

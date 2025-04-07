@@ -35,6 +35,6 @@ public class UserController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         userService.updateMyProfile(request, userDetails.getUsername());
-        return ResponseDto.success();
+        return ResponseDto.successResponse();
     }
 }

@@ -1,6 +1,7 @@
 package backend.spring.service.query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import backend.spring.dto.response.view.ViewHomeResponseDto;
@@ -20,9 +21,11 @@ import backend.spring.entity.QProject;
 import backend.spring.entity.QProjectStack;
 
 import backend.spring.entity.ProjectStack;
+import backend.spring.entity.User;
 import backend.spring.entity.enums.Location;
 import backend.spring.entity.enums.OrderProject;
 import backend.spring.entity.enums.Stack;
+import backend.spring.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +37,8 @@ public class ViewProjectService {
 	private final JPAQueryFactory queryFactory;
 	private final QProject qProject = QProject.project;
 
+	private final UserRepository userRepository;
+
 	/**
 	 * 필터링 및 정렬
 	 * @param page   //현재 페이지
@@ -44,8 +49,14 @@ public class ViewProjectService {
 	 * @param keyword //키워드 검색
 	 * @return ViewProjectResponseDto
 	 */
-	public ResponseEntity<? super ViewProjectResponseDto> getProjectPage(int page, OrderProject order, boolean process, Location location, List<Stack> stacks, String keyword) {
+	public ResponseEntity<? super ViewProjectResponseDto> getProjectPage(Long user_id, int page, OrderProject order, boolean process, Location location, List<Stack> stacks, String keyword) {
 		try{
+			Optional<User> option = userRepository.findById(user_id);
+			if(option.isEmpty()) {
+				return ResponseDto.not_existed_user();
+			}
+			User user = option.get(); //user를 받아서 recommend순 정렬
+
 			// 필터링
 			BooleanBuilder filterBuilder = ProjectQueryHelper.createFilterBuilder(process, location, stacks, keyword, qProject);
 			List<Project> results;
@@ -81,8 +92,14 @@ public class ViewProjectService {
 		}
 	}
 
-	public ResponseEntity<? super ViewHomeResponseDto> getHomePage(){
+	public ResponseEntity<? super ViewHomeResponseDto> getHomePage(Long user_id){
 		try{
+			Optional<User> option = userRepository.findById(user_id);
+			if(option.isEmpty()) {
+				return ResponseDto.not_existed_user();
+			}
+			User user = option.get(); //user를 받아서 recommend순 정렬
+
 			// 최근순, 인기순, 추천순 각각 상위 6개 프로젝트 가져옴
 			List<Project> recent;
 			List<Project> popular;
@@ -139,7 +156,7 @@ public class ViewProjectService {
 	public List<ViewProjectDto> mapToViewProjectDto(List<Project> projects) {
 		return projects.stream()
 			.map(p -> new ViewProjectDto(
-				p.getProject_id(),
+				p.getProjectId(),
 				p.getTitle(),
 				p.getDescription(),
 				p.getStackList().stream()

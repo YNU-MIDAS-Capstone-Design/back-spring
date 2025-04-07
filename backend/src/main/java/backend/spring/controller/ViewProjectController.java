@@ -5,10 +5,12 @@ import java.util.List;
 import backend.spring.dto.response.ResponseDto;
 import backend.spring.dto.response.view.ViewHomeResponseDto;
 import backend.spring.dto.response.view.ViewProjectResponseDto;
+import backend.spring.security.CustomUserDetails;
 import backend.spring.service.query.ViewProjectService;
 
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,8 +58,10 @@ public class ViewProjectController {
 		@RequestParam(name = "location", required = false) Location location, //enum으로 매칭되도록 받기
 		@RequestParam(name = "stacks", required = false) List<Stack> stacks,
 		@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword
+		//@AuthenticationPrincipal CustomUserDetails userDetails // 현재 로그인 유저 정보
 	) {
-		return viewProjectService.getProjectPage(page, order, process, location, stacks, keyword);
+		Long user_id = 1L;
+		return viewProjectService.getProjectPage( user_id, page, order, process, location, stacks, keyword);
 	}
 
 	@GetMapping("/home")   //nickname로 user 가져와서 추천알고리즘 하는 걸 추가해야함.
@@ -70,8 +74,11 @@ public class ViewProjectController {
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
 		}
 	)
-	public ResponseEntity<? super ViewHomeResponseDto> getHome(){
-		return viewProjectService.getHomePage();
+	public ResponseEntity<? super ViewHomeResponseDto> getHome(
+		//@AuthenticationPrincipal CustomUserDetails userDetails
+	){
+		Long user_id = 1L;
+		return viewProjectService.getHomePage( user_id );
 	}
 
 	// //팀원 초대하기

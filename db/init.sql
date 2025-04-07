@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS user_tech_stacks (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    tech_stack VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     user_id BIGINT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
@@ -23,15 +23,13 @@ CREATE TABLE IF NOT EXISTS project (
     project_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
     description VARCHAR(255),
-    processing VARCHAR(255),
-    required_role VARCHAR(255),
-    start_date DATETIME DEFAULT NULL,
-    project_period INT DEFAULT 0,
-    people INT DEFAULT 0,
     content TEXT,
+    processing VARCHAR(255),
+    recruitment_field VARCHAR(255),
+    people INT DEFAULT 0,
     meet_location VARCHAR(255),
-    project_like INT DEFAULT 0,
-    project_view INT DEFAULT 0,
+    like_count INT DEFAULT 0,
+    view_count INT DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     user_id BIGINT,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
@@ -39,8 +37,8 @@ CREATE TABLE IF NOT EXISTS project (
 
 CREATE TABLE IF NOT EXISTS project_stack (
     project_stack_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    project_id BIGINT,
     stack VARCHAR(255),
+    project_id BIGINT,
     FOREIGN KEY (project_id) REFERENCES project(project_id)
 );
 
@@ -52,11 +50,19 @@ CREATE TABLE IF NOT EXISTS project_like (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE IF NOT EXISTS project_comment(
+    comment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    message VARCHAR(255),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    project_id BIGINT,
+    user_id BIGINT,
+    FOREIGN KEY (project_id) REFERENCES project(project_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+)
+
 CREATE TABLE IF NOT EXISTS team (
     team_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    team_name VARCHAR(255),
-    project_id BIGINT,
-    FOREIGN KEY (project_id) REFERENCES project(project_id)
+    team_name VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS team_member (
@@ -75,6 +81,7 @@ CREATE TABLE IF NOT EXISTS team_calendar (
     cal_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     cal_date TIMESTAMP,
     content VARCHAR(255),
+    team_id BIGINT,
     FOREIGN KEY (team_id) REFERENCES team(team_id)
 );
 

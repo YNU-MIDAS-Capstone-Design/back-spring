@@ -2,6 +2,7 @@ package backend.spring.controller;
 
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import backend.spring.dto.response.myteams.GetMemberResponseDto;
 import backend.spring.dto.response.myteams.MemberStackResponseDto;
 import backend.spring.dto.response.myteams.TeamNameResponseDto;
 import backend.spring.dto.response.myteams.ViewTeamsResponseDto;
+import backend.spring.security.CustomUserDetails;
 import backend.spring.service.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -47,11 +49,9 @@ public class TeamController {
 	)
 	@GetMapping("")
 	public ResponseEntity<? super ViewTeamsResponseDto> viewMyTeam(
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
-		//return teamService.viewMyTeam( userDetails.getUserId() );
-		Long user_id = 1L;
-		return teamService.viewMyTeam( user_id );
+		return teamService.viewMyTeam( userDetails.getUser().getUserId() );
 	}
 
 	//팀 이름 바꾸기(팀장만)
@@ -75,11 +75,10 @@ public class TeamController {
 	@PostMapping("/name/{team_id}")
 	public ResponseEntity<? super TeamNameResponseDto> changeTeamName(
 		@RequestBody TeamNameRequestDto teamNameRequestDto,
-		@PathVariable Long team_id
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@PathVariable Long team_id,
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
-		Long user_id = 1L;
-		return teamService.changeTeamName(team_id, user_id, teamNameRequestDto);
+		return teamService.changeTeamName(team_id, userDetails.getUser().getUserId(), teamNameRequestDto);
 	}
 
 	//팀 멤버 불러오기
@@ -94,11 +93,10 @@ public class TeamController {
 	)
 	@GetMapping("/{team_id}/member")
 	public ResponseEntity<? super GetMemberResponseDto> getMember(
-		@PathVariable Long team_id
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@PathVariable Long team_id,
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		Long user_id = 1L;
-		return teamService.getMember(team_id, user_id );
+		return teamService.getMember(team_id, userDetails.getUser().getUserId() );
 	}
 
 	//팀원 스택 바꾸기(팀원 자신만)
@@ -122,11 +120,10 @@ public class TeamController {
 	@PostMapping("/member/position/{member_id}")
 	public ResponseEntity<? super MemberStackResponseDto> changePosition(
 		@RequestBody MemberStackRequestDto memberStackRequestDto,
-		@PathVariable Long member_id
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@PathVariable Long member_id,
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		Long user_id = 1L;
-		return teamService.changePosition(member_id, user_id, memberStackRequestDto);
+		return teamService.changePosition(member_id, userDetails.getUser().getUserId(), memberStackRequestDto);
 	}
 
 	//팀 일정 month 별로 불러오기
@@ -148,11 +145,10 @@ public class TeamController {
 	)
 	public ResponseEntity<? super CalendarResponseDto> viewCalendar(
 		@RequestBody CalendarRequestDto calendarRequestDto, //year, month
-		@PathVariable Long team_id
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@PathVariable Long team_id,
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		Long user_id = 1L;
-		return teamService.viewCalendar(team_id, user_id, calendarRequestDto);
+		return teamService.viewCalendar(team_id, userDetails.getUser().getUserId(), calendarRequestDto);
 	}
 
 	//팀 일정 추가
@@ -174,12 +170,11 @@ public class TeamController {
 	)
 	public ResponseEntity<? super CalendarEditResponseDto> addCalendar(
 		@RequestBody CalendarAddRequestDto calendarAddRequestDto, //날짜, 내용
-		@PathVariable Long team_id
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@PathVariable Long team_id,
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	)
 	{
-		Long user_id = 1L;
-		return teamService.addCalendar(team_id, user_id, calendarAddRequestDto);
+		return teamService.addCalendar(team_id, userDetails.getUser().getUserId(), calendarAddRequestDto);
 	}
 
 	//팀 일정 삭제
@@ -194,12 +189,11 @@ public class TeamController {
 		}
 	)
 	public ResponseEntity<? super CalendarEditResponseDto> deleteCalendar(
-		@PathVariable Long cal_id
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@PathVariable Long cal_id,
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	)  //user가 팀의 멤버인지 확인?
 	{
-		Long user_id = 1L;
-		return teamService.deleteCalendar(cal_id, user_id );
+		return teamService.deleteCalendar(cal_id, userDetails.getUser().getUserId() );
 	}
 
 	//팀 일정 수정
@@ -221,10 +215,9 @@ public class TeamController {
 	)
 	public ResponseEntity<? super CalendarEditResponseDto> modifyCalendar(
 		@RequestBody CalendarAddRequestDto calendarAddRequestDto, //날짜, 내용
-		@PathVariable Long cal_id
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@PathVariable Long cal_id,
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
-		Long user_id = 1L;
-		return teamService.modifyCalendar(cal_id, user_id, calendarAddRequestDto);
+		return teamService.modifyCalendar(cal_id, userDetails.getUser().getUserId(), calendarAddRequestDto);
 	}
 }

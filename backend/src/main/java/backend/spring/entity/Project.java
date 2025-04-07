@@ -46,18 +46,21 @@ public class Project {
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime created_at; //프로젝트 생성된 날짜
 
-
-	@ManyToOne(fetch = FetchType.LAZY) //작성자 id: 외래 키
+	//외래 키
+	@ManyToOne(fetch = FetchType.LAZY) //작성자 id
 	@JoinColumn(name = "userId")
 	private User user;
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	//리스트들
+	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
 	private List<ProjectStack> stackList;//프로젝트 스택
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
 	private List<ProjectComment> commentList;//댓글 리스트
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
 	private List<ProjectLike> likeList; //좋아요한 글
+
+	//지원자 리스트
 
 }

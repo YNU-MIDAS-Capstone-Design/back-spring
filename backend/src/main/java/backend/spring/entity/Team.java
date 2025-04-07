@@ -27,12 +27,12 @@ public class Team {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long teamId;
 
-	private String team_name;
+	private String teamName;
 
+	//리스트들
+	@OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE)
+	private List<TeamMember> memberList; //멤버 리스트
 
-	@OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private List<TeamMember> memberList; //멤버
-
-	@OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private List<TeamCalendar> calendarList; //팀 일정들
+	@OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE)
+	private List<TeamCalendar> calendarList; //팀 일정 리스트
 }

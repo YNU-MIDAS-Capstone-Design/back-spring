@@ -27,11 +27,11 @@ public class TeamMember {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long memberId;
 
-	private String member_name;
+	private String memberName;
 	private boolean owner;
 
 	@Enumerated(EnumType.STRING)
-	private Position team_role;
+	private Position teamRole;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "teamId")

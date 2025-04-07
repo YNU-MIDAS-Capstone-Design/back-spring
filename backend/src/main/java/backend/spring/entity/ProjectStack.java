@@ -16,7 +16,7 @@ public class ProjectStack {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long project_stackId;
+	private Long projectStackId;
 
 	@Enumerated(EnumType.STRING)
 	private Stack stack;
