@@ -10,9 +10,11 @@ import backend.spring.common.ResponseMessage;
 
 @Getter
 public class PutProjectLikeResponseDto extends ResponseDto{
+
     private PutProjectLikeResponseDto() {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
+
     public static ResponseEntity<PutProjectLikeResponseDto> success(){
         PutProjectLikeResponseDto result = new PutProjectLikeResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(result);

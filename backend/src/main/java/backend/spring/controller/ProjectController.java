@@ -3,8 +3,7 @@ package backend.spring.controller;
 import backend.spring.dto.request.project.PostProjectCommentRequestDto;
 import backend.spring.dto.request.project.PostProjectRequestDto;
 import backend.spring.dto.response.project.*;
-import backend.spring.service.ProjectService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping; //기존 import

@@ -9,9 +9,11 @@ import backend.spring.common.ResponseMessage;
 
 @Getter
 public class DeleteProjectResponseDto extends ResponseDto {
+
     private DeleteProjectResponseDto() {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
+
     public static ResponseEntity<DeleteProjectResponseDto> success() {
         DeleteProjectResponseDto result = new DeleteProjectResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(result);

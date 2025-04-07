@@ -4,9 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import backend.spring.entity.ProjectEntity;
 
 @Repository
-public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>{
+public interface ProjectRepository extends JpaRepository<Project, Integer>{
     boolean existsByProjectId(int projectId);
-    //쿼리 추가해야함
-
-
 }

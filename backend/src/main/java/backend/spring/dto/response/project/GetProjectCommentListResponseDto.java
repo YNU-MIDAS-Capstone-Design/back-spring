@@ -4,7 +4,6 @@ import backend.spring.common.ResponseCode;
 import backend.spring.common.ResponseMessage;
 import backend.spring.dto.response.ResponseDto;
 import backend.spring.dto.object.ProjectCommentListItem;
-import backend.spring.repository.resultSet.GetProjectCommentListResultSet;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +15,13 @@ public class GetProjectCommentListResponseDto extends ResponseDto {
 
     private List<ProjectCommentListItem> projectCommentList;
 
-    public GetProjectCommentListResponseDto(List<GetProjectCommentListResultSet> resultSets) {
+    public GetProjectCommentListResponseDto(List<ProjectCommentListItem> projects) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.projectCommentList = ProjectCommentListItem.copyList(resultSets);
+        this.projectCommentList = projects;
     }
 
-    public static ResponseEntity<GetProjectCommentListResponseDto> success(List<GetProjectCommentListResultSet> resultSets) {
-        GetProjectCommentListResponseDto result = new GetProjectCommentListResponseDto(resultSets);
+    public static ResponseEntity<GetProjectCommentListResponseDto> success(List<ProjectCommentListItem> projects) {
+        GetProjectCommentListResponseDto result = new GetProjectCommentListResponseDto(projects);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

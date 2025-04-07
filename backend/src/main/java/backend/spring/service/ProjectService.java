@@ -1,23 +1,125 @@
 package backend.spring.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 
-import backend.spring.dto.request.project.PostProjectRequestDto;
-import backend.spring.dto.request.project.PostProjectCommentRequestDto;
+import java.util.List;
+import java.util.ArrayList;
 
-import backend.spring.dto.response.project.PostProjectResponseDto;
-import backend.spring.dto.response.project.PostProjectCommentResponseDto;
-import backend.spring.dto.response.project.GetProjectLikeResponseDto;
-import backend.spring.dto.response.project.GetProjectCommentListResponseDto;
-import backend.spring.dto.response.project.PutProjectLikeResponseDto;
-import backend.spring.dto.response.project.DeleteProjectResponseDto;
+import backend.spring.dto.request.project.*;
+import backend.spring.dto.response.project.*;
+import backend.spring.dto.response.ResponseDto;
+import backend.spring.entity.*;
+import backend.spring.repository.*;
 
-public interface ProjectService {
+@Service
+@RequiredArgsConstructor
+public class ProjectService implements ProjectService {
 
-    ResponseEntity<? super PostProjectResponseDto> postProject(PostProjectRequestDto dto, long userId);
-    ResponseEntity<? super PostProjectCommentResponseDto> postProjectComment(PostProjectCommentRequestDto dto, long userId);
-    ResponseEntity<? super GetProjectLikeResponseDto> getProjectLikeList(Integer projectId);
-    ResponseEntity<? super GetProjectCommentListResponseDto> getProjectCommentList(Integer projectId);
-    ResponseEntity<? super PutProjectLikeResponseDto> putProjectLike(Integer projectId, long userId);
-    ResponseEntity<? super DeleteProjectResponseDto> deleteProject(Integer projectId);
+    private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
+    private final ProjectCommentRepository projectCommentRepository;
+    private final ProjectLikeRepository projectLikeRepository;
+
+    @Override
+    public ResponseEntity<? super PostProjectResponseDto> postProject(PostProjectRequestDto dto, long userId) {
+        try {
+            boolean existedUser = userRepository.existsByUserId(userId);
+            if (!existedUser) return PostProjectResponseDto.notExistUser();
+
+            Project projectEntity = new Project(dto, userId);
+            projectRepository.save(projectEntity);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PostProjectResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PutProjectLikeResponseDto> putProjectLike(Integer projectId, long userId) {
+        try {
+            boolean existedUser = userRepository.existsByUserId(userId);
+            if (!existedUser) return PutProjectLikeResponseDto.noExistUser();
+
+            ProjectEntity projectEntity = projectRepository.findByProjectId(projectId);
+            if (projectEntity == null) return PutProjectLikeResponseDto.noExistProject();
+
+            ProjectLikeEntity projectLikeEntity = projectLikeRepository.findByProjectIdAndUserId(projectId, userId);
+            if (projectLikeEntity == null) {
+                projectLikeEntity = new ProjectLikeEntity(projectId, userId);
+                projectLikeRepository.save(projectLikeEntity);
+                projectEntity.increaseLikeCount();
+            } else {
+                projectLikeRepository.delete(projectLikeEntity);
+                projectEntity.decreaseLikeCount();
+            }
+
+            projectRepository.save(projectEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PutProjectLikeResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetProjectCommentListResponseDto> getProjectCommentList(Integer projectId) {
+        List<GetProjectCommentListResultSet> resultSets = new ArrayList<>();
+        try {
+            boolean existedProject = projectRepository.existsByProjectId(projectId);
+            if (!existedProject) return GetProjectCommentListResponseDto.noExistProject();
+            resultSets = projectCommentRepository.getProjectCommentList(projectId);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetProjectCommentListResponseDto.success(resultSets);
+    }
+
+    @Override
+    public ResponseEntity<? super DeleteProjectResponseDto> deleteProject(Integer projectId) {
+        try {
+            ProjectEntity projectEntity = projectRepository.findByProjectId(projectId);
+            if (projectEntity == null) return DeleteProjectResponseDto.noExistProject();
+
+            // writer 체크 생략 (userId 받아야 함)
+            projectLikeRepository.deleteByProjectId(projectId);
+            projectCommentRepository.deleteByProjectId(projectId);
+            projectRepository.delete(projectEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return DeleteProjectResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PostProjectCommentResponseDto> postProjectComment(PostProjectCommentRequestDto dto, long userId) {
+        try {
+            ProjectEntity projectEntity = projectRepository.findByProjectId(dto.getProjectId());
+            if (projectEntity == null) return PostProjectCommentResponseDto.noExistProject();
+
+            boolean existedUser = userRepository.existsByUserId(userId);
+            if (!existedUser) return PostProjectCommentResponseDto.noExistUser();
+
+            ProjectCommentEntity commentEntity = new ProjectCommentEntity(dto, userId);
+            projectCommentRepository.save(commentEntity);
+
+            projectEntity.increaseCommentCount();
+            projectRepository.save(projectEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PostProjectCommentResponseDto.success();
+    }
 }
