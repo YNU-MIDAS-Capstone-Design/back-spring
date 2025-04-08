@@ -5,12 +5,16 @@ import backend.spring.dto.request.UpdateProfileRequest;
 import backend.spring.dto.response.ResponseDto;
 import backend.spring.security.CustomUserDetails;
 import backend.spring.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "User API", description = "유저 관련 API")
 public class UserController {
 
     private final UserService userService;
@@ -19,20 +23,25 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "특정 유저 프로필 조회", description = "닉네임을 기반으로 유저의 공개 프로필을 조회합니다.")
     @GetMapping("/{nickname}")
-    public ResponseEntity<UserProfileResponse> getUserProfile(@PathVariable String nickname) {
+    public ResponseEntity<UserProfileResponse> getUserProfile(
+            @Parameter(description = "조회할 유저의 닉네임", example = "devgizmo") @PathVariable String nickname) {
         return ResponseEntity.ok(userService.getUserProfile(nickname));
     }
 
+    @Operation(summary = "내 프로필 조회", description = "현재 로그인한 유저의 프로필 정보를 조회합니다.")
     @GetMapping("/me")
-    public ResponseEntity<UserProfileResponse> getMyProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<UserProfileResponse> getMyProfile(
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(userService.getMyProfile(userDetails.getUsername()));
     }
 
+    @Operation(summary = "내 프로필 수정", description = "현재 로그인한 유저의 프로필 정보를 수정합니다.")
     @PutMapping("/me")
     public ResponseEntity<ResponseDto> updateMyProfile(
             @RequestBody UpdateProfileRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         userService.updateMyProfile(request, userDetails.getUsername());
         return ResponseDto.success();
