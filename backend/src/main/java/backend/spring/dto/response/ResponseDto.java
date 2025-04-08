@@ -19,8 +19,18 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> success() {
+    public static ResponseEntity<ResponseDto> successResponse() {
         return ResponseEntity.ok(new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS));
+    }
+
+    public static ResponseEntity<ResponseDto> not_existed_user(){
+        ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+    }
+
+    public static ResponseEntity<ResponseDto> missing_required_data(){
+        ResponseDto result = new ResponseDto(ResponseCode.MISSING_REQUIRED_DATA, ResponseMessage.MISSING_REQUIRED_DATA);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
 
 }

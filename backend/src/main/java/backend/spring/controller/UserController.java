@@ -44,6 +44,6 @@ public class UserController {
             @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         userService.updateMyProfile(request, userDetails.getUsername());
-        return ResponseDto.success();
+        return ResponseDto.successResponse();
     }
 }

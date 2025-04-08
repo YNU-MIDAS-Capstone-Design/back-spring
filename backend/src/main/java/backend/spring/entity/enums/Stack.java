@@ -1,42 +1,42 @@
 package backend.spring.entity.enums;
 
 public enum Stack {
-    //백엔드
-    Nodejs,
-    Java,
-    Spring,
-    Express,
-    Django,
-    Flask,
-    NestJS,
-    MySQL,
-    MongoDB,
-    Docker,
-    AWS,
-    //프론트
-    JavaScript,
-    HTML,
-    CSS,
-    React,
-    Vue,
-    //디자이너
-    Figma,
-    Illustrator,
-    Adobe_XD,
-    //모바일 앱
-    Android,
-    Kotlin,
-    Swift,
-    Flutter,
-    //인공지능
-    Python,
-    AI,
-    BigData,
-    //게임+기타
-    Unity,
-    UnrealEngine,
-    C_SHARP,  //C#
-    C_PLUS,   //C++
-    IoT,
-    security
+	//백엔드
+	Nodejs,
+	Java,
+	Spring,
+	Express,
+	Django,
+	Flask,
+	NestJS,
+	MySQL,
+	MongoDB,
+	Docker,
+	AWS,
+	//프론트
+	JavaScript,
+	HTML,
+	CSS,
+	React,
+	Vue,
+	//디자이너
+	Figma,
+	Illustrator,
+	Adobe_XD,
+	//모바일 앱
+	Android,
+	Kotlin,
+	Swift,
+	Flutter,
+	//인공지능
+	Python,
+	AI,
+	BigData,
+	//게임+기타
+	Unity,
+	UnrealEngine,
+	C_SHARP,  //C#
+	C_PLUS,   //C++
+	IoT,
+	security
 }
