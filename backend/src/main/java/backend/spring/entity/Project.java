@@ -15,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "project")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @Setter
 public class Project {

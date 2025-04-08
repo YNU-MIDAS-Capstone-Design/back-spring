@@ -20,7 +20,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "project_comment")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @Setter
 public class ProjectComment {
