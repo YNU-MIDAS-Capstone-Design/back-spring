@@ -1,5 +1,6 @@
 package backend.spring.controller;
 
+import backend.spring.dto.request.project.EditCommentRequestDto;
 import backend.spring.dto.request.project.EditProjectRequestDto;
 import backend.spring.dto.request.project.PostCommentRequestDto;
 import backend.spring.dto.request.project.PostProjectRequestDto;
@@ -82,12 +83,50 @@ public class ProjectController {
     }
 
     @Operation(summary = "댓글 목록 조회", description = "모집글의 댓글 목록을 가져옴")
-    @GetMapping("/{projectId}/comment")
+    @GetMapping("/{projectId}/comment/list")
     public ResponseEntity<? extends ResponseDto> getComments(
             @PathVariable Long projectId
     ) {
         return projectService.getComments(projectId);
     }
+
+    @Operation(summary = "댓글 수정", description = "댓글 내용 수정")
+    @PutMapping("/comment/{commentId}/edit")
+    public ResponseEntity<? extends ResponseDto> editComment(
+            @PathVariable Long commentId,
+            @RequestBody @Valid EditCommentRequestDto requestDto,
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return projectService.editComment(commentId, requestDto, userDetails.getUser());
+    }
+
+    @Operation(summary = "댓글 삭제", description = "댓글 삭제")
+    @DeleteMapping("/comment/{commentId}/delete")
+    public ResponseEntity<? extends ResponseDto> deleteComment(
+            @PathVariable Long commentId,
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return projectService.deleteComment(commentId, userDetails.getUser());
+    }
+
+    @Operation(summary = "프로젝트 지원", description = "로그인한 유저가 해당 프로젝트에 지원합니다.")
+    @PostMapping("/{projectId}/apply")
+    public ResponseEntity<? extends ResponseDto> applyToProject(
+            @PathVariable Long projectId,
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return projectService.applyToProject(projectId, userDetails.getUser());
+    }
+
+    @Operation(summary = "지원자 목록 조회", description = "작성자가 자신의 프로젝트에 지원한 사용자 목록을 조회합니다.")
+    @GetMapping("/{projectId}/applicants")
+    public ResponseEntity<? extends ResponseDto> getApplicants(
+            @PathVariable Long projectId,
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return projectService.getApplicants(projectId, userDetails.getUser());
+    }
+
 
 }
 
