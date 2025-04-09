@@ -3,6 +3,7 @@ package backend.spring.controller;
 import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.dto.request.UpdateProfileRequest;
 import backend.spring.dto.response.ResponseDto;
+import backend.spring.dto.response.SignupResponseDto;
 import backend.spring.security.CustomUserDetails;
 import backend.spring.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,4 +47,24 @@ public class UserController {
         userService.updateMyProfile(request, userDetails.getUsername());
         return ResponseDto.successResponse();
     }
+
+    @Operation(summary = "이메일 중복 확인", description = "입력한 이메일이 이미 존재하는지 확인합니다.")
+    @GetMapping("/check-email")
+    public ResponseEntity<? extends ResponseDto> checkEmailDuplicate(@RequestParam String email) {
+        if (userService.isEmailDuplicate(email)) {
+            return SignupResponseDto.duplicateEmail();
+        }
+        return ResponseDto.successResponse();
+    }
+
+    @Operation(summary = "닉네임 중복 확인", description = "입력한 닉네임이 이미 존재하는지 확인합니다.")
+    @GetMapping("/check-nickname")
+    public ResponseEntity<? extends ResponseDto> checkNicknameDuplicate(@RequestParam String nickname) {
+        if (userService.isNicknameDuplicate(nickname)) {
+            return SignupResponseDto.duplicateNickname();
+        }
+        return ResponseDto.successResponse();
+    }
+
+
 }
