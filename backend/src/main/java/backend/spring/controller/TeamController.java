@@ -1,7 +1,6 @@
 package backend.spring.controller;
 
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import backend.spring.dto.request.myteams.CalendarAddRequestDto;
 import backend.spring.dto.request.myteams.CalendarRequestDto;
+import backend.spring.dto.request.myteams.CreateMemberRequestDto;
 import backend.spring.dto.request.myteams.MemberStackRequestDto;
 import backend.spring.dto.request.myteams.TeamNameRequestDto;
 import backend.spring.dto.response.ResponseDto;
 import backend.spring.dto.response.myteams.CalendarEditResponseDto;
 import backend.spring.dto.response.myteams.CalendarResponseDto;
+import backend.spring.dto.response.myteams.CreateMemberResponseDto;
+import backend.spring.dto.response.myteams.CreateTeamResponseDto;
 import backend.spring.dto.response.myteams.GetMemberResponseDto;
 import backend.spring.dto.response.myteams.MemberStackResponseDto;
 import backend.spring.dto.response.myteams.TeamNameResponseDto;
@@ -51,7 +53,31 @@ public class TeamController {
 	public ResponseEntity<? super ViewTeamsResponseDto> viewMyTeam(
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
-		return teamService.viewMyTeam( userDetails.getUser().getUserId() );
+		return teamService.viewMyTeam( userDetails.getUserId() );
+	}
+
+	//팀 생성하기(팀을 생성시 팀장이 됨)
+	@Operation(
+		summary = "팀 생성하기",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+			required = true,
+			content = @Content(
+				schema = @Schema(implementation = TeamNameRequestDto.class)
+			)
+		),
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공(SU)",
+				content = @Content(schema = @Schema(implementation = ViewTeamsResponseDto.class))),
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자(NU)",
+				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+		}
+	)
+	@PostMapping("/create")
+	public ResponseEntity<? super CreateTeamResponseDto> createTeam(
+		@RequestBody TeamNameRequestDto teamNameRequestDto,
+		@AuthenticationPrincipal CustomUserDetails userDetails
+	){
+		return teamService.createTeam(userDetails.getUserId(), teamNameRequestDto);
 	}
 
 	//팀 이름 바꾸기(팀장만)
@@ -78,7 +104,7 @@ public class TeamController {
 		@PathVariable Long team_id,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
-		return teamService.changeTeamName(team_id, userDetails.getUser().getUserId(), teamNameRequestDto);
+		return teamService.changeTeamName(team_id, userDetails.getUserId(), teamNameRequestDto);
 	}
 
 	//팀 멤버 불러오기
@@ -96,7 +122,34 @@ public class TeamController {
 		@PathVariable Long team_id,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		return teamService.getMember(team_id, userDetails.getUser().getUserId() );
+		return teamService.getMember(team_id, userDetails.getUserId() );
+	}
+
+	//팀원 추가하기(팀장만)
+	@Operation(
+		summary = "팀원 생성하기(팀장만 팀원 생성 가능)",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+			required = true,
+			content = @Content(
+				schema = @Schema(implementation = CreateMemberRequestDto.class)
+			)
+		),
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공(SU)",
+				content = @Content(schema = @Schema(implementation = ViewTeamsResponseDto.class))),
+			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀(NET),존재하지 않는 사용자(NU), 닉네임이 올바르지 않음(NU)",
+				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+			@ApiResponse(responseCode = "403", description = "팀장이 아님(NMU)",
+				content = @Content(schema = @Schema(implementation = ResponseDto.class)))
+		}
+	)
+	@PostMapping("/{team_id}/member/create")
+	public ResponseEntity<? super CreateMemberResponseDto> createTeam(
+		@PathVariable Long team_id,
+		@RequestBody CreateMemberRequestDto createMemberRequestDto,
+		@AuthenticationPrincipal CustomUserDetails userDetails
+	){
+		return teamService.createMember(userDetails.getUserId(), team_id, createMemberRequestDto);
 	}
 
 	//팀원 스택 바꾸기(팀원 자신만)
@@ -123,7 +176,7 @@ public class TeamController {
 		@PathVariable Long member_id,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		return teamService.changePosition(member_id, userDetails.getUser().getUserId(), memberStackRequestDto);
+		return teamService.changePosition(member_id, userDetails.getUserId(), memberStackRequestDto);
 	}
 
 	//팀 일정 month 별로 불러오기
@@ -148,7 +201,7 @@ public class TeamController {
 		@PathVariable Long team_id,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		return teamService.viewCalendar(team_id, userDetails.getUser().getUserId(), calendarRequestDto);
+		return teamService.viewCalendar(team_id, userDetails.getUserId(), calendarRequestDto);
 	}
 
 	//팀 일정 추가
@@ -174,7 +227,7 @@ public class TeamController {
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	)
 	{
-		return teamService.addCalendar(team_id, userDetails.getUser().getUserId(), calendarAddRequestDto);
+		return teamService.addCalendar(team_id, userDetails.getUserId(), calendarAddRequestDto);
 	}
 
 	//팀 일정 삭제
@@ -218,6 +271,6 @@ public class TeamController {
 		@PathVariable Long cal_id,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
-		return teamService.modifyCalendar(cal_id, userDetails.getUser().getUserId(), calendarAddRequestDto);
+		return teamService.modifyCalendar(cal_id, userDetails.getUserId(), calendarAddRequestDto);
 	}
 }
