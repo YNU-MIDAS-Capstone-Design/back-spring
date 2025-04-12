@@ -1,5 +1,6 @@
 package backend.spring.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,11 +15,14 @@ import backend.spring.dto.object.ViewMemberDto;
 import backend.spring.dto.object.ViewTeamDto;
 import backend.spring.dto.request.myteams.CalendarAddRequestDto;
 import backend.spring.dto.request.myteams.CalendarRequestDto;
+import backend.spring.dto.request.myteams.CreateMemberRequestDto;
 import backend.spring.dto.request.myteams.MemberStackRequestDto;
 import backend.spring.dto.request.myteams.TeamNameRequestDto;
 import backend.spring.dto.response.ResponseDto;
 import backend.spring.dto.response.myteams.CalendarEditResponseDto;
 import backend.spring.dto.response.myteams.CalendarResponseDto;
+import backend.spring.dto.response.myteams.CreateMemberResponseDto;
+import backend.spring.dto.response.myteams.CreateTeamResponseDto;
 import backend.spring.dto.response.myteams.GetMemberResponseDto;
 import backend.spring.dto.response.myteams.MemberStackResponseDto;
 import backend.spring.dto.response.myteams.TeamNameResponseDto;
@@ -31,6 +35,7 @@ import backend.spring.repository.TeamCalendarRepository;
 import backend.spring.repository.TeamMemberRepository;
 import backend.spring.repository.TeamRepository;
 import backend.spring.repository.UserRepository;
+import jakarta.transaction.Transactional;  //지연 로딩을 사용하는 메서드에 추가
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -44,6 +49,7 @@ public class TeamService {
 
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); //년 월 일
 
+	@Transactional  //지연 로딩을 위해 추가
 	public ResponseEntity<? super ViewTeamsResponseDto> viewMyTeam(Long user_id){
 		try{
 			Optional<User> option = userRepository.findById(user_id);
@@ -71,9 +77,82 @@ public class TeamService {
 		}
 	}
 
+	@Transactional
+	public ResponseEntity<? super CreateTeamResponseDto> createTeam(Long user_id, TeamNameRequestDto dto){
+		try{
+			if(dto.getTeamName() == null || dto.getTeamName().isEmpty()){
+				return ResponseDto.missing_required_data();
+			}
+			Optional<User> option = userRepository.findById(user_id);
+			if(option.isEmpty()) {
+				return ResponseDto.not_existed_user();
+			}
+			User user = option.get();
+
+			Team team = new Team(dto.getTeamName());
+			teamRepository.save(team);
+
+			TeamMember team_owner = new TeamMember(user.getNickname(), true, user, team);
+			teamMemberRepository.save(team_owner);
+
+			return CreateTeamResponseDto.success();
+		} catch(Exception e){
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+	}
+
+	@Transactional
+	public ResponseEntity<? super CreateMemberResponseDto> createMember(Long user_id, Long team_id, CreateMemberRequestDto dto){
+		try{
+			Optional<User> option = userRepository.findById(user_id);
+			if(option.isEmpty()) {
+				return ResponseDto.not_existed_user();
+			}
+			User user = option.get();
+
+			Optional<Team> options = teamRepository.findById(team_id);
+			if(options.isEmpty()) {
+				return CreateMemberResponseDto.not_existed_team();
+			}
+			Team team = options.get(); //팀이 존재하는지 확인
+
+			//사용자가 팀장이 맞는지 확인
+			boolean owner = true;
+			List<TeamMember> teamMemberList = teamMemberRepository.findAllByUser(user);
+			for(TeamMember member : teamMemberList){
+				if(member.getTeam().getTeamId().equals(team_id) && member.isOwner()){
+					owner = false; //팀장이 맞다면 false
+					break;
+				}
+			}
+			if(owner){ //팀장과 매칭하지 않을 때
+				return CreateMemberResponseDto.not_match_user();
+			}
+
+			if(dto.getNickname() == null || dto.getNickname().isEmpty()){
+				return ResponseDto.missing_required_data();
+			}
+			Optional<User> member_option = userRepository.findByNickname(dto.getNickname());
+			if(member_option.isEmpty()) {
+				return CreateMemberResponseDto.not_existed_nickname();
+			}
+			User member = option.get();
+
+			TeamMember new_member = new TeamMember(dto.getNickname(), false, member, team);
+			teamMemberRepository.save(new_member);
+
+			return CreateMemberResponseDto.success();
+		} catch(Exception e){
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+	}
+
+	@Transactional
 	public ResponseEntity<? super TeamNameResponseDto> changeTeamName(Long team_id, Long user_id, TeamNameRequestDto dto){
 		try{
-			if(dto.getTeamName().isEmpty()){
+			if(dto.getTeamName() == null || dto.getTeamName().isEmpty()){
 				return ResponseDto.missing_required_data();
 			} //수정할 데이터가 null이 아닌지 확인
 
@@ -110,6 +189,7 @@ public class TeamService {
 		}
 	}
 
+	@Transactional
 	public ResponseEntity<? super GetMemberResponseDto> getMember(Long team_id, Long user_id){
 		try{
 			Optional<User> option = userRepository.findById(user_id);
@@ -140,6 +220,7 @@ public class TeamService {
 		}
 	}
 
+	@Transactional
 	public ResponseEntity<? super MemberStackResponseDto> changePosition(Long member_id, Long user_id, MemberStackRequestDto dto){
 		try{
 			if(dto.getTeam_role() == null){
@@ -180,6 +261,7 @@ public class TeamService {
 		}
 	}
 
+	@Transactional
 	public ResponseEntity<? super CalendarResponseDto> viewCalendar(Long team_id, Long user_id, CalendarRequestDto dto){
 		try{
 			Optional<User> option = userRepository.findById(user_id);
@@ -225,6 +307,7 @@ public class TeamService {
 		}
 	}
 
+	@Transactional
 	public ResponseEntity<? super CalendarEditResponseDto> addCalendar(Long team_id, Long user_id, CalendarAddRequestDto dto){
 		try{
 			if(dto.getCal_date() == null || dto.getCal_date().isEmpty()){
@@ -242,8 +325,9 @@ public class TeamService {
 			}
 			Team team = options.get(); //팀이 존재하는지 확인
 
-			LocalDateTime date = LocalDateTime.parse(dto.getCal_date(), formatter);
-			TeamCalendar new_cal = new TeamCalendar(date, dto.getContent(), team);
+			LocalDate date = LocalDate.parse(dto.getCal_date(), formatter);
+			LocalDateTime dateTime = date.atStartOfDay();
+			TeamCalendar new_cal = new TeamCalendar(dateTime, dto.getContent(), team);
 			teamCalendarRepository.save(new_cal); //새로운 일정 저장
 
 			return CalendarEditResponseDto.success();
@@ -253,9 +337,10 @@ public class TeamService {
 		}
 	}
 
+	@Transactional
 	public ResponseEntity<? super CalendarEditResponseDto> modifyCalendar(Long cal_id, Long user_id, CalendarAddRequestDto dto){
 		try{
-			if(dto.getCal_date() == null || dto.getCal_date().isEmpty()){
+			if(dto.getContent() == null || dto.getContent().isEmpty()){
 				return CalendarEditResponseDto.missing_required_data();
 			} //수정할 데이터가 null인지 확인
 
@@ -269,8 +354,6 @@ public class TeamService {
 				return CalendarEditResponseDto.not_existed_cal();
 			}
 			TeamCalendar calendar = options.get(); //일정이 존재하는지 확인
-			LocalDateTime date = LocalDateTime.parse(dto.getCal_date(), formatter);
-			calendar.setCalDate(date);
 			calendar.setContent(dto.getContent());  //일정 수정
 
 			return CalendarEditResponseDto.success();
@@ -280,6 +363,7 @@ public class TeamService {
 		}
 	}
 
+	@Transactional
 	public ResponseEntity<? super CalendarEditResponseDto> deleteCalendar(Long cal_id, Long user_id){
 		try{
 			Optional<User> option = userRepository.findById(user_id);

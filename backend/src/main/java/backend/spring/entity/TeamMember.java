@@ -41,4 +41,10 @@ public class TeamMember {
 	@JoinColumn(name = "userId")
 	private User user;
 
+	public TeamMember(String memberName, boolean owner, User user, Team team){
+		this.memberName = memberName;
+		this.owner = owner;
+		this.user = user;
+		this.team = team;
+	}
 }

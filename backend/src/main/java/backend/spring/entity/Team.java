@@ -35,4 +35,8 @@ public class Team {
 
 	@OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE)
 	private List<TeamCalendar> calendarList; //팀 일정 리스트
+
+	public Team(String teamName){
+		this.teamName = teamName;
+	}
 }

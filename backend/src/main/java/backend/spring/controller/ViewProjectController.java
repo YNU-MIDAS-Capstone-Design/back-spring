@@ -57,11 +57,10 @@ public class ViewProjectController {
 		@RequestParam(name = "process", required = false, defaultValue = "false") boolean process, //true: 모집중만
 		@RequestParam(name = "location", required = false) Location location, //enum으로 매칭되도록 받기
 		@RequestParam(name = "stacks", required = false) List<Stack> stacks,
-		@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword
-		//@AuthenticationPrincipal CustomUserDetails userDetails // 현재 로그인 유저 정보
+		@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
+		@AuthenticationPrincipal CustomUserDetails userDetails // 현재 로그인 유저 정보
 	) {
-		Long user_id = 1L;
-		return viewProjectService.getProjectPage( user_id, page, order, process, location, stacks, keyword);
+		return viewProjectService.getProjectPage( userDetails.getUserId(), page, order, process, location, stacks, keyword);
 	}
 
 	@GetMapping("/home")   //nickname로 user 가져와서 추천알고리즘 하는 걸 추가해야함.
@@ -75,17 +74,9 @@ public class ViewProjectController {
 		}
 	)
 	public ResponseEntity<? super ViewHomeResponseDto> getHome(
-		//@AuthenticationPrincipal CustomUserDetails userDetails
+		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		Long user_id = 1L;
-		return viewProjectService.getHomePage( user_id );
+		return viewProjectService.getHomePage( userDetails.getUserId() );
 	}
 
-	// //팀원 초대하기
-	// @PostMapping("/project/invite/{volunteer_id}")  //지원자(user_id, project_id) -> 팀 멤버(user_id, team_id, owner)
-	// public ResponseEntity<? super InviteMemberResponseDto> inviteMember(
-	// 	@PathVariable Long volunteer_id,
-	// 	@AuthenticationPrincipal CustomUserDetails userDetails){ //사용자가 팀장인지 확인 후 팀원을 초대
-	// 	return viewProjectService.inviteMember(volunteer_id, userDetails.getUserId() );
-	// }
 }
