@@ -1,5 +1,6 @@
 package backend.spring.dto.object;
 
+import backend.spring.entity.TeamMember;
 import backend.spring.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -26,6 +27,8 @@ public class UserProfileResponse {
     @Schema(description = "기술 스택 목록", example = "[\"CSS\", \"HTML\"]")
     private List<String> techStacks;
 
+    private List<String> teams;
+
     public UserProfileResponse(User user) {
         this.nickname = user.getNickname();
         this.bio = user.getBio();
@@ -34,6 +37,10 @@ public class UserProfileResponse {
         this.techStacks = user.getTechStacks()
                 .stream()
                 .map(stack -> stack.getName().name())
+                .collect(Collectors.toList());
+        this.teams = user.getTeamList().stream()
+                .map(TeamMember::getTeam)
+                .map(team -> team.getTeamName())
                 .collect(Collectors.toList());
     }
 }
