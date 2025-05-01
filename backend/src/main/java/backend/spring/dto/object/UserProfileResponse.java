@@ -15,6 +15,9 @@ public class UserProfileResponse {
     @Schema(description = "유저 닉네임", example = "exam")
     private String nickname;
 
+    @Schema(description = "이메일", example = "user@example.com")
+    private String email;
+
     @Schema(description = "자기소개", example = "안녕하세요, 백엔드 개발자입니다.")
     private String bio;
 
@@ -30,6 +33,7 @@ public class UserProfileResponse {
     private List<String> teams;
 
     public UserProfileResponse(User user) {
+        this.email = user.getEmail();
         this.nickname = user.getNickname();
         this.bio = user.getBio();
         this.location = user.getLocation().name();
