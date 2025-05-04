@@ -16,6 +16,8 @@ services:
       - db
     networks:
       - app-network
+    volumes:
+      - ./storage/profile:/app/data/profile_image
 
   db:
     image: db
