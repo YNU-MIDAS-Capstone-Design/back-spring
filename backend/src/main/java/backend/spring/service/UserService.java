@@ -1,10 +1,10 @@
 package backend.spring.service;
 
-import backend.spring.entity.TechStack;
 import backend.spring.dto.request.SignupRequest;
-import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.dto.request.UpdateProfileRequest;
+import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.dto.response.SignupResponseDto;
+import backend.spring.entity.TechStack;
 import backend.spring.entity.User;
 import backend.spring.entity.enums.Stack;
 import backend.spring.repository.UserRepository;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FileService fileService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       FileService fileService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.fileService = fileService;
     }
 
     @Transactional
@@ -46,7 +51,7 @@ public class UserService {
                 .location(request.getLocation())
                 .sns(request.getSns())
                 .bio(request.getBio())
-                .techStacks(techStacks) // 생성 시 빈 리스트 주입
+                .techStacks(techStacks)
                 .build();
 
         for (Stack stack : request.getTechStacks()) {
@@ -93,6 +98,22 @@ public class UserService {
         }
         user.getTechStacks().addAll(newStacks);
     }
+
+    /**
+     * 프로필 이미지 업로드 후 URL을 User 엔티티에 저장
+     */
+    @Transactional
+    public void updateMyProfileImage(MultipartFile imageFile, String username) {
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 파일 저장 (storage/profile 디렉토리에 저장) 및 파일명 반환
+        String filename = fileService.file_upload("profile_image", imageFile);
+        // URL 조합
+        String imageUrl = "/static/profile/" + filename;
+        user.setProfileImageUrl(imageUrl);
+    }
+
     @Transactional(readOnly = true)
     public boolean isEmailDuplicate(String email) {
         return userRepository.existsByEmail(email);
@@ -102,5 +123,4 @@ public class UserService {
     public boolean isNicknameDuplicate(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
-
 }
