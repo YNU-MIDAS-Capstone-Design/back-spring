@@ -31,12 +31,17 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/hello","/v3/api-docs/**",
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/hello",
+                                "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api/users/check-nickname",
                                 "/api/users/check-email",
-                                "/api/view/**"  //로그인 안해도 이미지 확인 가능
+                                "/api/view/**",      // 로그인 없이 이미지 확인 가능
+                                "/static/profile/**", // 프로필 이미지 접근 가능
+                                "/api/project/scores"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -45,6 +50,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

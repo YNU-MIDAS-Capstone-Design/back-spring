@@ -8,6 +8,7 @@ import backend.spring.dto.response.ResponseDto;
 import backend.spring.dto.response.project.PostProjectResponseDto;
 import backend.spring.security.CustomUserDetails;
 import backend.spring.service.ProjectService;
+import backend.spring.service.RecommendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import backend.spring.dto.object.RecommendScoreDto;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Tag(name = "Project", description = "Project 관련 API")
 @RestController
@@ -24,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final RecommendService recommendService;
 
     @Operation(summary = "프로젝트 등록", description = "모집글 등록")
     @PostMapping
@@ -127,6 +134,11 @@ public class ProjectController {
         return projectService.getApplicants(projectId, userDetails.getUser());
     }
 
+
+    @GetMapping("/scores")
+    public List<RecommendScoreDto> getScores(@RequestParam Long userId) {
+        return recommendService.getRecommendScores(userId);
+    }
 
 }
 

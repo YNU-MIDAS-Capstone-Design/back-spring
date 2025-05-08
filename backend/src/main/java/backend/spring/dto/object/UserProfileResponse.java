@@ -32,6 +32,9 @@ public class UserProfileResponse {
 
     private List<String> teams;
 
+    @Schema(description = "프로필 이미지 URL", example = "/static/profile/123e4567-e89b-12d3-a456-426614174000_profile.png")
+    private String profileImageUrl;
+
     public UserProfileResponse(User user) {
         this.email = user.getEmail();
         this.nickname = user.getNickname();
@@ -46,5 +49,6 @@ public class UserProfileResponse {
                 .map(TeamMember::getTeam)
                 .map(team -> team.getTeamName())
                 .collect(Collectors.toList());
+        this.profileImageUrl = user.getProfileImageUrl();
     }
 }
