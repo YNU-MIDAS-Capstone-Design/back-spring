@@ -100,19 +100,33 @@ public class UserService {
     }
 
     /**
-     * 프로필 이미지 업로드 후 URL을 User 엔티티에 저장
+     * 프로필 이미지 업로드 후 filename을 User 엔티티에 저장
      */
     @Transactional
     public void updateMyProfileImage(MultipartFile imageFile, String username) {
         User user = userRepository.findByNickname(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 파일 저장 (storage/profile 디렉토리에 저장) 및 파일명 반환
         String filename = fileService.file_upload("profile_image", imageFile);
-        // URL 조합
-        String imageUrl = "/static/profile/" + filename;
-        user.setProfileImageUrl(imageUrl);
+        user.setProfileImageFilename(filename);
     }
+
+    @Transactional
+    public void deleteMyProfileImage(String username) {
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String filename = user.getProfileImageFilename();
+        if (filename != null && !filename.isBlank()) {
+            boolean deleted = fileService.file_delete("profile_image", filename);
+            if (!deleted) {
+                throw new RuntimeException("Failed to delete profile image file");
+            }
+            //  DB 초기화
+            user.setProfileImageFilename(null);
+        }
+    }
+
 
     @Transactional(readOnly = true)
     public boolean isEmailDuplicate(String email) {

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     location VARCHAR(255),
     sns VARCHAR(255),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    profile_image_url VARCHAR(255)
+    profile_image_filename VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS user_tech_stacks (

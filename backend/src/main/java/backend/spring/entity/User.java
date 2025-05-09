@@ -48,8 +48,8 @@ public class User {
     @Column(nullable = false, updatable = false)
     private LocalDateTime created_at;
 
-    @Column(name = "profile_image_url")
-    private String profileImageUrl;
+    @Column(name = "profile_image_filename")
+    private String profileImageFilename;
 
     //리스트들
     //지원한 글 리스트

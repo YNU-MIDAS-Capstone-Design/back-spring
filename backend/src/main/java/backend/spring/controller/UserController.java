@@ -86,4 +86,13 @@ public class UserController {
         return ResponseDto.successResponse();
     }
 
+    @Operation(summary = "내 프로필 이미지 삭제", description = "저장된 프로필 이미지를 삭제합니다.")
+    @DeleteMapping("/me/image")
+    public ResponseEntity<ResponseDto> deleteProfileImage(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        userService.deleteMyProfileImage(userDetails.getUsername());
+        return ResponseDto.successResponse();
+    }
+
 }
