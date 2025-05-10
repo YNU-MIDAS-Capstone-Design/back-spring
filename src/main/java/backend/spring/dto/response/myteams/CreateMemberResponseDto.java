@@ -10,10 +10,15 @@ import lombok.Getter;
 
 @Getter
 public class CreateMemberResponseDto extends ResponseDto {
-	private CreateMemberResponseDto(){super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);}
+	String nickname;
 
-	public static ResponseEntity<CreateMemberResponseDto> success(){
-		CreateMemberResponseDto result = new CreateMemberResponseDto();
+	private CreateMemberResponseDto(String nickname){
+		super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
+		this.nickname = nickname;
+	}
+
+	public static ResponseEntity<CreateMemberResponseDto> success(String nickname){
+		CreateMemberResponseDto result = new CreateMemberResponseDto(nickname);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
