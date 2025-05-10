@@ -307,7 +307,7 @@ public class TeamService {
 			List<ViewMemberDto> members = new ArrayList<>();
 			for(TeamMember member : memberList){
 				User member_user = member.getUser();
-				image_url = "http://localhost:8080/api/view/team_image," + member_user.getProfileImageFilename();
+				image_url = "http://localhost:8080/api/view/profile_image," + member_user.getProfileImageFilename();
 				ViewMemberDto mem = new ViewMemberDto(member.getMemberId(), member.getMemberName(), member.isOwner(), member.getTeamRole(), image_url);
 				members.add(mem);
 			}
