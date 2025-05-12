@@ -2,10 +2,12 @@ package backend.spring.entity;
 
 import backend.spring.entity.enums.Stack;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
+		import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "project_stack")
