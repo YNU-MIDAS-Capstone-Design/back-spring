@@ -104,10 +104,23 @@ public class UserService {
      */
     @Transactional
     public void updateMyProfileImage(MultipartFile imageFile, String username) {
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new RuntimeException("업로드할 파일을 선택해 주세요");
+        }
+
         User user = userRepository.findByNickname(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String filename = fileService.file_upload("profile_image", imageFile);
+        String filename;
+        try {
+            filename = fileService.file_upload("profile_image", imageFile);
+        } catch (Exception e) {
+            throw new RuntimeException("프로필 이미지 저장에 실패했습니다", e);
+        }
+        if (filename == null || filename.isBlank()) {
+            throw new RuntimeException("프로필 이미지 저장에 실패했습니다");
+        }
+
         user.setProfileImageFilename(filename);
     }
 
