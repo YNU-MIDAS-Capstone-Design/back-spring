@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import backend.spring.dto.response.view.ViewHomeResponseDto;
+import backend.spring.service.RecommendService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,8 @@ public class ViewProjectService {
 	private final QProject qProject = QProject.project;
 
 	private final UserRepository userRepository;
+	private final RecommendService recommendService;
+
 
 	/**
 	 * 필터링 및 정렬
@@ -63,11 +66,15 @@ public class ViewProjectService {
 
 			//정렬
 			if(order == OrderProject.RECOMMEND){//추천 알고리즘
+				//List<Project> recommended = recommendService.recommendHybrid(user.getUserId());
+
+
 				results = queryFactory.selectFrom(qProject)
 					.leftJoin(qProject.stackList, QProjectStack.projectStack).fetchJoin()
 					.where(filterBuilder)
 					.limit(6)
 					.fetch();
+
 				//필터링된 데이터를 넣어 추천 알고리즘 순으로 정렬 + 한 페이지에 들어갈 것만 가져오기
 			} else{ //최근순, 인기순 정렬
 				OrderSpecifier<?> orderSpecifier = ProjectQueryHelper.getOrderSpecifier(order, qProject); //정렬
