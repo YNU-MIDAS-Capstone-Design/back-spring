@@ -54,7 +54,7 @@ public class User {
     //리스트들
     //지원한 글 리스트
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TechStack> techStacks; //사용자 스택 리스트
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)

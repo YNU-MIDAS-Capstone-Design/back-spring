@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS user_tech_stacks (
 CREATE TABLE IF NOT EXISTS project (
     project_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
-    description VARCHAR(255),
     content TEXT,
     processing VARCHAR(255),
     recruitment_field VARCHAR(255),
@@ -134,18 +133,18 @@ VALUES
     (4, '2025-04-11 00:00:00', '백엔드 API 리뷰', 2);
 
 
-INSERT INTO project (project_id, title, description, content, processing, recruitment_field, people, meet_location, like_count, view_count, created_at, user_id)
+INSERT INTO project (project_id, title, content, processing, recruitment_field, people, meet_location, like_count, view_count, created_at, user_id)
 VALUES
-(1, '모바일 개발자 모집 프로젝트 1', '경상북도 지역에서 함께할 모바일 포지션 팀원 모집', '모바일 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집중', '모바일', 2, '경상북도', 0, 486, '2025-04-10 10:23:22', 2),
-(2, '프론트 개발자 모집 프로젝트 2', '경상남도 지역에서 함께할 프론트 포지션 팀원 모집', '프론트 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '수정중', '프론트', 4, '경상남도', 42, 458, '2025-04-20 10:23:22', 2),
-(3, '인공지능 개발자 모집 프로젝트 3', '충청남도 지역에서 함께할 인공지능 포지션 팀원 모집', '인공지능 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집중', '인공지능', 5, '충청남도', 25, 283, '2025-05-01 10:23:22', 1),
-(4, '백엔드 개발자 모집 프로젝트 4', '경상남도 지역에서 함께할 백엔드 포지션 팀원 모집', '백엔드 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집중', '백엔드', 3, '경상남도', 31, 292, '2025-04-09 10:23:22', 2),
-(5, '백엔드 개발자 모집 프로젝트 5', '충청북도 지역에서 함께할 백엔드 포지션 팀원 모집', '백엔드 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '수정중', '백엔드', 6, '충청북도', 28, 369, '2025-04-03 10:23:22', 1),
-(6, '디자이너 개발자 모집 프로젝트 6', '전라남도 지역에서 함께할 디자이너 포지션 팀원 모집', '디자이너 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '수정중', '디자이너', 6, '전라남도', 12, 404, '2025-04-17 10:23:22', 3),
-(7, '디자이너 개발자 모집 프로젝트 7', '충청북도 지역에서 함께할 디자이너 포지션 팀원 모집', '디자이너 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집완료', '디자이너', 6, '충청북도', 4, 237, '2025-04-24 10:23:22', 2),
-(8, '디자이너 개발자 모집 프로젝트 8', '경상남도 지역에서 함께할 디자이너 포지션 팀원 모집', '디자이너 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집완료', '디자이너', 5, '경상남도', 33, 132, '2025-04-13 10:23:22', 3),
-(9, '모바일 개발자 모집 프로젝트 9', '전라북도 지역에서 함께할 모바일 포지션 팀원 모집', '모바일 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '수정중', '모바일', 4, '전라북도', 10, 172, '2025-04-16 10:23:22', 3),
-(10, '프론트 개발자 모집 프로젝트 10', '충청북도 지역에서 함께할 프론트 포지션 팀원 모집', '프론트 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집완료', '프론트', 6, '충청북도', 13, 282, '2025-04-13 10:23:22', 3);
+(1, '모바일 개발자 모집 프로젝트 1', '모바일 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집중', '모바일', 2, '경상북도', 0, 486, '2025-04-10 10:23:22', 2),
+(2, '프론트 개발자 모집 프로젝트 2', '프론트 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '수정중', '프론트', 4, '경상남도', 42, 458, '2025-04-20 10:23:22', 2),
+(3, '인공지능 개발자 모집 프로젝트 3', '인공지능 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집중', '인공지능', 5, '충청남도', 25, 283, '2025-05-01 10:23:22', 1),
+(4, '백엔드 개발자 모집 프로젝트 4', '백엔드 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집중', '백엔드', 3, '경상남도', 31, 292, '2025-04-09 10:23:22', 2),
+(5, '백엔드 개발자 모집 프로젝트 5', '백엔드 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '수정중', '백엔드', 6, '충청북도', 28, 369, '2025-04-03 10:23:22', 1),
+(6, '디자이너 개발자 모집 프로젝트 6', '디자이너 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '수정중', '디자이너', 6, '전라남도', 12, 404, '2025-04-17 10:23:22', 3),
+(7, '디자이너 개발자 모집 프로젝트 7', '디자이너 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집완료', '디자이너', 6, '충청북도', 4, 237, '2025-04-24 10:23:22', 2),
+(8, '디자이너 개발자 모집 프로젝트 8', '디자이너 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집완료', '디자이너', 5, '경상남도', 33, 132, '2025-04-13 10:23:22', 3),
+(9, '모바일 개발자 모집 프로젝트 9', '모바일 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '수정중', '모바일', 4, '전라북도', 10, 172, '2025-04-16 10:23:22', 3),
+(10, '프론트 개발자 모집 프로젝트 10', '프론트 관련 기술을 활용한 실전 프로젝트를 함께 진행합니다.', '모집완료', '프론트', 6, '충청북도', 13, 282, '2025-04-13 10:23:22', 3);
 
 
 INSERT INTO project_stack (project_id, stack) VALUES
@@ -178,3 +177,64 @@ INSERT INTO project_stack (project_id, stack) VALUES
 (9, 'security'),
 (9, 'Java'),
 (10, 'security');
+
+
+CREATE TABLE IF NOT EXISTS project_applicant (
+                                                 applicant_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                                 accepted BOOLEAN DEFAULT FALSE,
+                                                 user_id BIGINT,
+                                                 project_id BIGINT,
+                                                 FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                                                 FOREIGN KEY (project_id) REFERENCES project(project_id) ON DELETE CASCADE
+);
+
+
+INSERT INTO project_applicant (accepted, user_id, project_id) VALUES
+                                                                  (false, 1, 1),
+                                                                  (false, 2, 1),
+                                                                  (true, 3, 2);
+
+
+CREATE TABLE IF NOT EXISTS project_comment (
+                                               comment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                               message VARCHAR(255),
+                                               created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                               project_id BIGINT,
+                                               user_id BIGINT,
+                                               FOREIGN KEY (project_id) REFERENCES project(project_id) ON DELETE CASCADE,
+                                               FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+INSERT INTO project_comment (message, created_at, project_id, user_id) VALUES
+                                                                           ('참여하고 싶어요!', '2025-05-14 04:20:58', 1, 2),
+                                                                           ('좋은 프로젝트네요!', '2025-05-14 04:20:58', 2, 1);
+
+
+CREATE TABLE IF NOT EXISTS project_like (
+                                            like_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                            project_id BIGINT,
+                                            user_id BIGINT,
+                                            FOREIGN KEY (project_id) REFERENCES project(project_id) ON DELETE CASCADE,
+                                            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+INSERT INTO project_like (project_id, user_id) VALUES
+                                                   (1, 2),
+                                                   (2, 3);
+
+
+CREATE TABLE IF NOT EXISTS notification (
+                                            id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                            receiver_id BIGINT,
+                                            message VARCHAR(255),
+                                            is_read BOOLEAN DEFAULT FALSE,
+                                            target_id BIGINT,
+                                            type VARCHAR(50),
+                                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                            FOREIGN KEY (receiver_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+INSERT INTO notification (receiver_id, message, is_read, target_id, type, created_at) VALUES
+                                                                                          (1, 'bob님이 프로젝트에 지원했습니다.', false, 1, '지원', '2025-05-14 04:20:58'),
+                                                                                          (1, 'charlie님이 댓글을 남겼습니다.', false, 2, '댓글', '2025-05-14 04:20:58'),
+                                                                                          (1, 'bob님이 좋아요를 눌렀습니다.', false, 1, '좋아요', '2025-05-14 04:20:58');
