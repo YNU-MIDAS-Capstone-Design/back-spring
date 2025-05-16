@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +23,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FileService fileService;
 
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
+           PasswordEncoder passwordEncoder,
+                       FileService fileService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.fileService = fileService;
     }
 
 
@@ -100,6 +104,48 @@ public class UserService {
                 ts.setUser(user);
                 user.getTechStacks().add(ts);
             }
+        }
+    }
+
+
+    /**
+     * 프로필 이미지 업로드 후 filename을 User 엔티티에 저장
+     */
+    @Transactional
+    public void updateMyProfileImage(MultipartFile imageFile, String username) {
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new RuntimeException("업로드할 파일을 선택해 주세요");
+        }
+
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String filename;
+        try {
+            filename = fileService.file_upload("profile_image", imageFile);
+        } catch (Exception e) {
+            throw new RuntimeException("프로필 이미지 저장에 실패했습니다", e);
+        }
+        if (filename == null || filename.isBlank()) {
+            throw new RuntimeException("프로필 이미지 저장에 실패했습니다");
+        }
+
+        user.setProfileImageFilename(filename);
+    }
+
+    @Transactional
+    public void deleteMyProfileImage(String username) {
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String filename = user.getProfileImageFilename();
+        if (filename != null && !filename.isBlank()) {
+            boolean deleted = fileService.file_delete("profile_image", filename);
+            if (!deleted) {
+                throw new RuntimeException("Failed to delete profile image file");
+            }
+            //  DB 초기화
+            user.setProfileImageFilename(null);
         }
     }
 
