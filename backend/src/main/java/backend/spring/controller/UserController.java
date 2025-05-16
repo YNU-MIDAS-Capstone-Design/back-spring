@@ -79,8 +79,8 @@ public class UserController {
         return ResponseDto.successResponse();
     }
 
-    @Operation(summary = "내 프로필 이미지 업로드", description = "프로필 이미지를 multipart/form-data로 업로드합니다.")
-    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "내 프로필 이미지 업로드", description = "프로필 이미지를 multipart/form-data로 업로드하거나 교체합니다.")
+    @PutMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDto> updateProfileImage(
             @Parameter(hidden = true)
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -89,6 +89,7 @@ public class UserController {
         userService.updateMyProfileImage(imageFile, userDetails.getUsername());
         return ResponseDto.successResponse();
     }
+
 
     @Operation(summary = "내 프로필 이미지 삭제", description = "저장된 프로필 이미지를 삭제합니다.")
     @DeleteMapping("/me/image")
