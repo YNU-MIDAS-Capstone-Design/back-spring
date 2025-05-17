@@ -1,8 +1,10 @@
 package backend.spring.controller;
 
 import backend.spring.dto.object.UserProfileResponse;
+import backend.spring.dto.object.ViewProjectDto;
 import backend.spring.dto.request.UpdateProfileRequest;
 import backend.spring.dto.response.ResponseDto;
+import backend.spring.dto.response.ResponseDtoWithData;
 import backend.spring.dto.response.SignupResponseDto;
 import backend.spring.security.CustomUserDetails;
 import backend.spring.service.UserService;
@@ -15,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Tag(name = "User API", description = "유저 관련 API")
 @RestController
@@ -98,6 +102,35 @@ public class UserController {
     ) {
         userService.deleteMyProfileImage(userDetails.getUsername());
         return ResponseDto.successResponse();
+    }
+
+    /* ─────────────── 마이페이지: 내 활동 ─────────────── */
+
+    @Operation(summary = "내가 좋아요한 글", description = "내가 좋아요한 프로젝트 목록을 조회합니다.")
+    @GetMapping("/me/likes")
+    public ResponseEntity<ResponseDtoWithData<List<ViewProjectDto>>> getMyLikes(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<ViewProjectDto> list = userService.getLikedProjects(userDetails.getUsername());
+        return ResponseEntity.ok(ResponseDtoWithData.success(list));
+    }
+
+    @Operation(summary = "내가 지원한 글", description = "내가 지원한 프로젝트 목록을 조회합니다.")
+    @GetMapping("/me/applications")
+    public ResponseEntity<ResponseDtoWithData<List<ViewProjectDto>>> getMyApplications(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<ViewProjectDto> list = userService.getAppliedProjects(userDetails.getUsername());
+        return ResponseEntity.ok(ResponseDtoWithData.success(list));
+    }
+
+    @Operation(summary = "내가 쓴 글", description = "내가 작성한 프로젝트 목록을 조회합니다.")
+    @GetMapping("/me/posts")
+    public ResponseEntity<ResponseDtoWithData<List<ViewProjectDto>>> getMyPosts(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<ViewProjectDto> list = userService.getMyProjects(userDetails.getUsername());
+        return ResponseEntity.ok(ResponseDtoWithData.success(list));
     }
 
 }

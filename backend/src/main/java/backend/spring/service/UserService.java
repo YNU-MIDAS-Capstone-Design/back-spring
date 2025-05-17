@@ -1,5 +1,6 @@
 package backend.spring.service;
 
+import backend.spring.dto.object.ViewProjectDto;
 import backend.spring.dto.request.SignupRequest;
 import backend.spring.dto.request.UpdateProfileRequest;
 import backend.spring.dto.object.UserProfileResponse;
@@ -7,6 +8,12 @@ import backend.spring.dto.response.SignupResponseDto;
 import backend.spring.entity.TechStack;
 import backend.spring.entity.User;
 import backend.spring.entity.enums.Stack;
+import backend.spring.entity.Project;
+
+
+import backend.spring.repository.ProjectApplicantRepository;
+import backend.spring.repository.ProjectLikeRepository;
+import backend.spring.repository.ProjectRepository;
 import backend.spring.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,12 +32,24 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final FileService fileService;
 
+    private final ProjectLikeRepository projectLikeRepository;
+    private final ProjectApplicantRepository projectApplicantRepository;
+    private final ProjectRepository projectRepository;
+
+
+
     public UserService(UserRepository userRepository,
-           PasswordEncoder passwordEncoder,
-                       FileService fileService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.fileService = fileService;
+                       PasswordEncoder passwordEncoder,
+                       FileService fileService,
+                       ProjectLikeRepository projectLikeRepository,
+                       ProjectApplicantRepository projectApplicantRepository,
+                       ProjectRepository projectRepository) {
+        this.userRepository             = userRepository;
+        this.passwordEncoder            = passwordEncoder;
+        this.fileService                = fileService;
+        this.projectLikeRepository      = projectLikeRepository;
+        this.projectApplicantRepository = projectApplicantRepository;
+        this.projectRepository          = projectRepository;
     }
 
 
@@ -159,4 +178,68 @@ public class UserService {
     public boolean isNicknameDuplicate(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
+
+    @Transactional(readOnly = true)
+    public List<ViewProjectDto> getLikedProjects(String username) {
+        User me = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+        return projectLikeRepository.findAllByUser(me).stream()
+                .map(pl -> {
+                    Project p = pl.getProject();
+                    List<Stack> stacks = p.getStackList().stream()
+                            .map(ps -> ps.getStack())
+                            .toList();
+                    return new ViewProjectDto(
+                            p.getProjectId(),
+                            p.getTitle(),
+                            p.getContent(),
+                            stacks
+                    );
+                })
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ViewProjectDto> getAppliedProjects(String username) {
+        User me = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+        return projectApplicantRepository.findAllByUser(me).stream()
+                .map(pa -> {
+                    Project p = pa.getProject();
+                    List<Stack> stacks = p.getStackList().stream()
+                            .map(ps -> ps.getStack())
+                            .toList();
+                    return new ViewProjectDto(
+                            p.getProjectId(),
+                            p.getTitle(),
+                            p.getContent(),
+                            stacks
+                    );
+                })
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ViewProjectDto> getMyProjects(String username) {
+        User me = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+        return projectRepository.findAllByUser(me).stream()
+                .map(p -> {
+                    List<Stack> stacks = p.getStackList().stream()
+                            .map(ps -> ps.getStack())
+                            .toList();
+                    return new ViewProjectDto(
+                            p.getProjectId(),
+                            p.getTitle(),
+                            p.getContent(),
+                            stacks
+                    );
+                })
+                .toList();
+    }
+
+
 }
