@@ -27,6 +27,13 @@ public class UpdateProfileRequest {
     @Schema(description = "SNS 링크", example = "https://linkedin.com/in/example")
     private String sns;
 
+
+    @Schema(description = "MBTI", example = "ENTP")
+    private String mbti;
+
+    @Schema(description = "직업", example = "프론트엔드 개발자")
+    private String job;
+
     @Builder.Default
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     @Schema(description = "기술 스택 목록", example = "[\"JAVA\", \"REACT\"]")

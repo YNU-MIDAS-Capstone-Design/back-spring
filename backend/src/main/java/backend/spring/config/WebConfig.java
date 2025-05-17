@@ -19,11 +19,6 @@ public class WebConfig {  //백엔드의 CORS설정
                         .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메서드
                         .allowedHeaders("*");  // 허용할 헤더
             }
-            @Override
-            public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/static/profile/**")
-                        .addResourceLocations("file:/app/data/profile_image/");
-            }
         };  //프론트 80포트로부터 오는 요청에 대해 백엔드의 cors 허용을 해준다.
 
     }

@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     bio VARCHAR(255),
     location VARCHAR(255),
     sns VARCHAR(255),
+    mbti VARCHAR(10),
+    job VARCHAR(255),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     profile_image_filename VARCHAR(255)
 );
@@ -86,14 +88,14 @@ CREATE TABLE IF NOT EXISTS team_calendar (
 );
 
 
-INSERT INTO users (user_id, nickname, email, password, bio, location, sns)
+INSERT INTO users (user_id, nickname, email, password, bio, location, sns,mbti, job)
 VALUES
     (1, 'eunseo', 'eunseo@naver.com', '$2a$10$t9/b6NAzhtuKc.BibC3wzuRtUh/WK/0kx8xfEAqMvSZHq.wiPGMVq',
-     '백엔드 개발자 지망생입니다. Spring Boot에 관심이 많아요.', '경상북도', 'https://github.com/devlover'),
+     '백엔드 개발자 지망생입니다. Spring Boot에 관심이 많아요.', '경상북도', 'https://github.com/devlover','INTP', '학생'),
     (2, 'bob', 'bob@naver.com', '$2a$10$.QiPgFUltC2cWZIfGliCk.vj0Zwtux8am00R21sAJrYIzIyFAU7By',
-     '백엔드 개발자 지망생입니다. Spring Boot에 관심이 많아요.', '경상남도', 'https://github.com/devlover'),
+     '백엔드 개발자 지망생입니다. Spring Boot에 관심이 많아요.', '경상남도', 'https://github.com/devlover','ENFJ', '개발자'),
     (3, 'charlie', 'charlie@naver.com', '$2a$10$EweauHtFZh7umLbxS/Z9p.FuelbCXoZwiu6lVqobYnCKBiPHgoqAe',
-     '백엔드 개발자 지망생입니다. Spring Boot에 관심이 많아요.', '강원도', 'https://github.com/devlover');
+     '백엔드 개발자 지망생입니다. Spring Boot에 관심이 많아요.', '강원도', 'https://github.com/devlover', 'ENTP','디자이너');
 -- 비밀번호 : eunseoPassword123!, bobPassword123!, charliePassword123!
 
 INSERT INTO user_tech_stacks (name, user_id)

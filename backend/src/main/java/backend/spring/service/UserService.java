@@ -71,6 +71,8 @@ public class UserService {
                 .location(request.getLocation())
                 .sns(request.getSns())
                 .bio(request.getBio())
+                .mbti(request.getMbti())
+                .job(request.getJob())
                 .techStacks(techStacks)
                 .build();
 
@@ -110,20 +112,26 @@ public class UserService {
         if (request.getBio() != null)      user.setBio(request.getBio());
         if (request.getLocation() != null) user.setLocation(request.getLocation());
         if (request.getSns() != null)      user.setSns(request.getSns());
+        if (request.getMbti() != null)     user.setMbti(request.getMbti());
+        if (request.getJob() != null)      user.setJob(request.getJob());
 
-        if (request.getTechStacks() != null && !request.getTechStacks().isEmpty()) {
+        if (request.getTechStacks() == null || request.getTechStacks().isEmpty()) {
+            user.getTechStacks().clear();
+        } else {
             if (user.getTechStacks() == null) {
                 user.setTechStacks(new ArrayList<>());
             } else {
                 user.getTechStacks().clear();
             }
 
+            // 새롭게 전달된 기술 스택으로 리스트를 채웁니다.
             for (Stack stackEnum : request.getTechStacks()) {
                 TechStack ts = new TechStack(stackEnum);
                 ts.setUser(user);
                 user.getTechStacks().add(ts);
             }
         }
+
     }
 
 

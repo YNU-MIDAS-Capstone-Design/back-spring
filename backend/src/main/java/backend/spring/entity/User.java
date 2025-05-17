@@ -44,6 +44,10 @@ public class User {
 
     private String sns;
 
+    private String mbti;
+    private String job;
+
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime created_at;

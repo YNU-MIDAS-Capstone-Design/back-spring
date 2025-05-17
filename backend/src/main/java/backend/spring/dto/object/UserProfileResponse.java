@@ -27,6 +27,12 @@ public class UserProfileResponse {
     @Schema(description = "SNS 링크", example = "https://github.com/exam")
     private String sns;
 
+    @Schema(description = "MBTI", example = "INTJ")
+    private String mbti;
+
+    @Schema(description = "직업", example = "학생")
+    private String job;
+
     @Schema(description = "기술 스택 목록", example = "[\"CSS\", \"HTML\"]")
     private List<String> techStacks;
 
@@ -41,6 +47,8 @@ public class UserProfileResponse {
         this.bio = user.getBio();
         this.location = user.getLocation().name();
         this.sns = user.getSns();
+        this.mbti = user.getMbti();
+        this.job = user.getJob();
         this.techStacks = user.getTechStacks()
                 .stream()
                 .map(stack -> stack.getName().name())
