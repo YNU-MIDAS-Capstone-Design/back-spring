@@ -1,10 +1,10 @@
 package backend.spring.service.query;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import backend.spring.dto.response.view.ViewHomeResponseDto;
+import backend.spring.service.RecommendService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +37,7 @@ public class ViewProjectService {
 	private final JPAQueryFactory queryFactory;
 	private final QProject qProject = QProject.project;
 
+	private final RecommendService recommendService;
 	private final UserRepository userRepository;
 
 	/**
@@ -63,12 +64,13 @@ public class ViewProjectService {
 
 			//정렬
 			if(order == OrderProject.RECOMMEND){//추천 알고리즘
-				results = queryFactory.selectFrom(qProject)
-					.leftJoin(qProject.stackList, QProjectStack.projectStack).fetchJoin()
-					.where(filterBuilder)
-					.limit(6)
-					.fetch();
-				//필터링된 데이터를 넣어 추천 알고리즘 순으로 정렬 + 한 페이지에 들어갈 것만 가져오기
+				//전체에서 필터링된 결과 가져오기
+				List<Project> filtered = queryFactory.selectFrom(qProject)
+						.leftJoin(qProject.stackList, QProjectStack.projectStack).fetchJoin()
+						.where(filterBuilder)
+						.fetch();
+				//필터링된 결과를 추천순으로 정렬후 page당 6개 가져옴
+				results = getRecommendFilteredResults(user.getUserId(), page, filtered);
 			} else{ //최근순, 인기순 정렬
 				OrderSpecifier<?> orderSpecifier = ProjectQueryHelper.getOrderSpecifier(order, qProject); //정렬
 				results = getFilteredSortedResults(page, orderSpecifier, filterBuilder); //필터링+정렬
@@ -105,16 +107,13 @@ public class ViewProjectService {
 			List<Project> popular;
 			List<Project> recommend;
 
-			// 추천순 정렬
-			recommend = queryFactory.selectFrom(qProject) //전체 프로젝트 가져옴
-				.leftJoin(qProject.stackList, QProjectStack.projectStack).fetchJoin()
-				.limit(6)
-				.fetch();
-			// 전체 프로젝트 가져와도 없으면 오류
-			if (recommend == null || recommend.isEmpty()) {
-				return ViewHomeResponseDto.zero_project();
-			}
-			//전체 프로젝트 넣어서 추천순으로 정렬후 상위 6개 가져옴
+			//추천순 정렬
+			//전체 프로젝트 가져오기
+			List<Project> filtered = queryFactory.selectFrom(qProject)
+					.leftJoin(qProject.stackList, QProjectStack.projectStack).fetchJoin()
+					.fetch();
+			//필터링된 결과를 추천순으로 정렬후 6개 상위 6개 가져옴
+			recommend = getRecommendFilteredResults(user.getUserId(), 0, filtered);
 			List<ViewProjectDto> recommendList = mapToViewProjectDto(recommend);
 
 			// 최근순 정렬
@@ -152,13 +151,34 @@ public class ViewProjectService {
 			.limit(6)
 			.fetch();
 	}
+	// 추천순 및 필터링 적용
+	private List<Project> getRecommendFilteredResults( Long user_id, int page, List<Project> filtered){
+
+		List<Project> recommend = recommendService.recommendHybrid(user_id); // 정렬 결과 가져오기
+		List<Long> recommendedProjectIds = recommend.stream()
+				.map(Project::getProjectId).toList();// 추천순서 id 가져오기
+
+		// <프로젝트 id, 추천 순위> 이렇게 바꿈
+		Map<Long, Integer> recommendOrder = new HashMap<>();
+		for (int i = 0; i < recommendedProjectIds.size(); i++) {
+			recommendOrder.put(recommendedProjectIds.get(i), i);
+		}
+
+		// 필터링된 프로젝트를 추천 순서대로 정렬후 상위 6개 가져옴
+		return filtered.stream()
+				.sorted(Comparator.comparingInt(
+						p -> recommendOrder.getOrDefault(p.getProjectId(), Integer.MAX_VALUE)))
+				.skip(page * 6L)
+				.limit(6)
+				.collect(Collectors.toList());
+	}
 	// Product 리스트 -> ProductListDto 리스트로 변환 메서드
 	public List<ViewProjectDto> mapToViewProjectDto(List<Project> projects) {
 		return projects.stream()
 			.map(p -> new ViewProjectDto(
 				p.getProjectId(),
 				p.getTitle(),
-				p.getDescription(),
+				p.getContent(),
 				p.getStackList().stream()
 					.map(ProjectStack::getStack) //Stack만 뽑아냄
 					.collect(Collectors.toList())

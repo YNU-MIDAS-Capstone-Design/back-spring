@@ -31,8 +31,4 @@ public class ViewHomeResponseDto extends ResponseDto {
 
 	//not_existed_user
 
-	public static ResponseEntity<ResponseDto> zero_project(){
-		ResponseDto result = new ResponseDto(ResponseCode.EMPTY_RESULT, "프로젝트가 없습니다.");
-		return ResponseEntity.status(HttpStatus.OK).body(result);
-	}
 }

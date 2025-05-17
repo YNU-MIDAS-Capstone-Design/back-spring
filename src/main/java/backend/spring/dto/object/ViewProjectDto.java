@@ -9,13 +9,13 @@ import lombok.Getter;
 public class ViewProjectDto {
 	private Long project_id;
 	private String title;
-	private String description;
+	private String content;
 	private List<Stack> stackList;
 
-	public ViewProjectDto(Long project_id, String title, String description, List<Stack> stackList) {
+	public ViewProjectDto(Long project_id, String title, String content, List<Stack> stackList) {
 		this.project_id = project_id;
 		this.title = title;
-		this.description = description;
+		this.content = content;
 		this.stackList = stackList;
 	}
 }
