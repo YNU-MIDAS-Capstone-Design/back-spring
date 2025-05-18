@@ -35,7 +35,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api/users/check-nickname",
-                                "/api/users/check-email").permitAll()
+                                "/api/users/check-email",
+                                "/api/view/**" //로그인 안해도 이미지 확인 가능
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))

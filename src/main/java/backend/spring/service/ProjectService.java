@@ -66,7 +66,7 @@ public class ProjectService {
         if (!project.getUser().getUserId().equals(user.getUserId())) return ResponseDto.not_existed_user();
 
         project.setTitle(requestDto.getTitle());
-        project.setDescription(requestDto.getDescription());
+        //project.setDescription(requestDto.getDescription());
         project.setContent(requestDto.getContent());
         project.setProcessing(requestDto.getProcessing());
         project.setRecruitmentField(requestDto.getRecruitmentField());

@@ -27,10 +27,19 @@ public class UserProfileResponse {
     @Schema(description = "SNS 링크", example = "https://github.com/exam")
     private String sns;
 
+    @Schema(description = "MBTI", example = "INTJ")
+    private String mbti;
+
+    @Schema(description = "직업", example = "학생")
+    private String job;
+
     @Schema(description = "기술 스택 목록", example = "[\"CSS\", \"HTML\"]")
     private List<String> techStacks;
 
     private List<String> teams;
+
+    @Schema(description = "프로필 이미지 URL", example = "http://localhost:8080/api/view/profile_image/123e4567-e89b-12d3-a456-426614174000_profile.png")
+    private String profileImageUrl;
 
     public UserProfileResponse(User user) {
         this.email = user.getEmail();
@@ -38,6 +47,8 @@ public class UserProfileResponse {
         this.bio = user.getBio();
         this.location = user.getLocation().name();
         this.sns = user.getSns();
+        this.mbti = user.getMbti();
+        this.job = user.getJob();
         this.techStacks = user.getTechStacks()
                 .stream()
                 .map(stack -> stack.getName().name())
@@ -46,5 +57,13 @@ public class UserProfileResponse {
                 .map(TeamMember::getTeam)
                 .map(team -> team.getTeamName())
                 .collect(Collectors.toList());
+        String filename = user.getProfileImageFilename();
+        if (filename != null && !filename.isBlank()) {
+            // 파일명이 있을 때만 URL 조합
+            this.profileImageUrl =
+                    "http://localhost:8080/api/view/profile_image/" + filename;
+        } else {
+            this.profileImageUrl = null;
+        }
     }
 }

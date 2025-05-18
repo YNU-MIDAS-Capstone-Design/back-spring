@@ -87,7 +87,7 @@ public class ProjectQueryHelper {
 		if (keyword != null) {
 			filterBuilder.and(
 				project.title.containsIgnoreCase(keyword)
-					.or(project.description.containsIgnoreCase(keyword))
+					.or(project.content.containsIgnoreCase(keyword))
 			);
 		}
 	}

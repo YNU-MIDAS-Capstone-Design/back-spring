@@ -158,7 +158,8 @@ public class ViewProjectService {
 			.map(p -> new ViewProjectDto(
 				p.getProjectId(),
 				p.getTitle(),
-				p.getDescription(),
+				p.getContent(),
+				//p.getDescription(),
 				p.getStackList().stream()
 					.map(ProjectStack::getStack) //Stack만 뽑아냄
 					.collect(Collectors.toList())
