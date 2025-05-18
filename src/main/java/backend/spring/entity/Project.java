@@ -25,7 +25,7 @@ public class Project {
 	private Long projectId;
 
 	private String title; //제목
-	private String description; //요약
+	//private String description; //요약
 	private String content; //내용
 
 	@Enumerated(EnumType.STRING)
