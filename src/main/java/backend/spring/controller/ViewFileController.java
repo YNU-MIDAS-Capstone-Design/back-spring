@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/api/view")
+@RequestMapping("/api/view")  //view 컨트롤러를 새로 만듬 //api로 시작하게 안하면 nginx에 backend 프록시를 또 추가해야
 @RequiredArgsConstructor
 public class ViewFileController {
 
@@ -26,32 +26,33 @@ public class ViewFileController {
 
     @PostMapping("/upload")
     public ResponseEntity<? super UploadFileResponseDto> uploadImage(@RequestParam("file") MultipartFile file){
-        String fileName = fileService.file_upload("profile_image", file);
+        String fileName = fileService.file_upload("team_image", file);
         if( fileName == null){
             return UploadFileResponseDto.databaseError(); //파일 저장 실패
         } else{
             // fileName만 db에 저장하면 됨
 
-            String image_url = "http://localhost:8080/api/view/profile_image/" + fileName;
+            String image_url = "http://localhost:8080/api/view/team_image," + fileName;
             //프론트에게 넘겨줄 때 이 url만 넘겨주면 됨. 그러면 그냥 프론트는 이 url에 img 태그 씌워서 사진 보여줌
-            //<img src="http://localhost:8080/api/view/profile_image/baf1e39d.jpg" alt="프로필 이미지" />
+            //<img src="http://localhost:8080/api/view/profile_image,baf1e39d.jpg" alt="프로필 이미지" />
             return UploadFileResponseDto.success(image_url);
         }
     }
     @DeleteMapping("/delete/{file_name}")
     public ResponseEntity<ResponseDto> deleteImage(@PathVariable("file_name") String fileName){
-        if(fileService.file_delete("profile_image", fileName)){
+        if(fileService.file_delete("team_image", fileName)){
             return ResponseDto.successResponse(); //파일 삭제 성공
         } else{
             return ResponseDto.databaseError();  //파일 삭제 실패
         }
     }
 
-    @GetMapping("/profile_image/{file_name}")  //이미지를 보여주는 api
-    public ResponseEntity<Resource> viewProfile(@PathVariable("file_name") String fileName) {
+    @GetMapping("/{file_path}")  //이미지를 보여주는 api
+    public ResponseEntity<Resource> viewImage(@PathVariable("file_path") String filePath) {
         try {
-            String fileDir = "/app/data/profile_image/";
-            Path path = Paths.get(fileDir, fileName);
+            String filepath = filePath.replace(",", "/");
+            String fileDir = "/app/data/";
+            Path path = Paths.get(fileDir, filepath);
             Resource resource = new UrlResource(path.toUri());
 
             // 파일의 MIME 타입을 동적으로 결정

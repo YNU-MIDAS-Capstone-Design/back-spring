@@ -1,30 +1,14 @@
 package backend.spring.controller;
 
+import backend.spring.dto.request.myteams.*;
+import backend.spring.dto.response.myteams.*;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import backend.spring.dto.request.myteams.CalendarAddRequestDto;
-import backend.spring.dto.request.myteams.CalendarRequestDto;
-import backend.spring.dto.request.myteams.CreateMemberRequestDto;
-import backend.spring.dto.request.myteams.MemberStackRequestDto;
-import backend.spring.dto.request.myteams.TeamNameRequestDto;
 import backend.spring.dto.response.ResponseDto;
-import backend.spring.dto.response.myteams.CalendarEditResponseDto;
-import backend.spring.dto.response.myteams.CalendarResponseDto;
-import backend.spring.dto.response.myteams.CreateMemberResponseDto;
-import backend.spring.dto.response.myteams.CreateTeamResponseDto;
-import backend.spring.dto.response.myteams.GetMemberResponseDto;
-import backend.spring.dto.response.myteams.MemberStackResponseDto;
-import backend.spring.dto.response.myteams.TeamNameResponseDto;
-import backend.spring.dto.response.myteams.ViewTeamsResponseDto;
 import backend.spring.security.CustomUserDetails;
 import backend.spring.service.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,22 +47,67 @@ public class TeamController {
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
 			required = true,
 			content = @Content(
-				schema = @Schema(implementation = TeamNameRequestDto.class)
+				schema = @Schema(implementation = CreateTeamRequestDto.class)
 			)
 		),
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공(SU)",
-				content = @Content(schema = @Schema(implementation = ViewTeamsResponseDto.class))),
+				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
 			@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+			@ApiResponse(responseCode = "500", description = "팀 생성 실패(DBE)",
+					content = @Content(schema = @Schema(implementation = ResponseDto.class))),
 		}
 	)
 	@PostMapping("/create")
-	public ResponseEntity<? super CreateTeamResponseDto> createTeam(
-		@RequestBody TeamNameRequestDto teamNameRequestDto,
+	public ResponseEntity<ResponseDto> createTeam(
+		@RequestBody CreateTeamRequestDto createTeamRequestDto,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		return teamService.createTeam(userDetails.getUserId(), teamNameRequestDto);
+		return teamService.createTeam(userDetails.getUserId(), createTeamRequestDto);
+	}
+
+	//팀 이미지 추가
+	@Operation(
+			summary = "팀 이미지 추가하기",
+			requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+					content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
+			),
+			responses = {
+					@ApiResponse(responseCode = "200", description = "성공(SU)",
+							content = @Content(schema = @Schema(implementation = TeamImgResponseDto.class))),
+					@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자(NU), 존재하지 않는 팀(NET)",
+							content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+					@ApiResponse(responseCode = "500", description = "파일 저장 실패(DBE)",
+							content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+			}
+	)
+	@PostMapping("/image/{team_id}")
+	public ResponseEntity<? super TeamImgResponseDto> uploadTeamImage(
+			@RequestParam("file") MultipartFile file,
+			@PathVariable Long team_id,
+			@AuthenticationPrincipal CustomUserDetails userDetails
+			){
+		return teamService.uploadImage(file, team_id, userDetails.getUserId());
+	}
+	//팀 이미지 삭제하기
+	@Operation(
+			summary = "팀 이미지 삭제하기 : 팀 이미지 삭제 후 팀컬러를 반환해줌.",
+			responses = {
+					@ApiResponse(responseCode = "200", description = "성공(SU)",
+							content = @Content(schema = @Schema(implementation = TeamImgResponseDto.class))),
+					@ApiResponse(responseCode = "400", description = "존재하지 않는 사용자(NU)",
+							content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+					@ApiResponse(responseCode = "500", description = "파일 삭제 실패",
+							content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+			}
+	)
+	@DeleteMapping("/del_img/{team_id}")
+	public ResponseEntity<? super TeamImgResponseDto> deleteTeamImage(
+			@PathVariable Long team_id,
+			@AuthenticationPrincipal CustomUserDetails userDetails
+	){
+		return teamService.deleteTeamImg(team_id, userDetails.getUserId());
 	}
 
 	//팀 이름 바꾸기(팀장만)
@@ -136,7 +166,7 @@ public class TeamController {
 		),
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공(SU)",
-				content = @Content(schema = @Schema(implementation = ViewTeamsResponseDto.class))),
+				content = @Content(schema = @Schema(implementation = CreateMemberResponseDto.class))),
 			@ApiResponse(responseCode = "400", description = "존재하지 않는 팀(NET),존재하지 않는 사용자(NU), 닉네임이 올바르지 않음(NU)",
 				content = @Content(schema = @Schema(implementation = ResponseDto.class))),
 			@ApiResponse(responseCode = "403", description = "팀장이 아님(NMU)",
@@ -144,13 +174,40 @@ public class TeamController {
 		}
 	)
 	@PostMapping("/{team_id}/member/create")
-	public ResponseEntity<? super CreateMemberResponseDto> createTeam(
+	public ResponseEntity<? super CreateMemberResponseDto> createMember(
 		@PathVariable Long team_id,
 		@RequestBody CreateMemberRequestDto createMemberRequestDto,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
 		return teamService.createMember(userDetails.getUserId(), team_id, createMemberRequestDto);
 	}
+	//팀원 삭제하기
+	@Operation(
+			summary = "팀원 삭제하기(팀장만 팀원 삭제 가능)",
+			requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+					required = true,
+					content = @Content(
+							schema = @Schema(implementation = DeleteMemberRequestDto.class)
+					)
+			),
+			responses = {
+					@ApiResponse(responseCode = "200", description = "성공(SU)",
+							content = @Content(schema = @Schema(implementation = DelMemberResponseDto.class))),
+					@ApiResponse(responseCode = "400", description = "존재하지 않는 멤버(NET),존재하지 않는 사용자(NU)",
+							content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+					@ApiResponse(responseCode = "403", description = "팀장이 아님(NMU)",
+							content = @Content(schema = @Schema(implementation = ResponseDto.class)))
+			}
+	)
+	@PostMapping("/{team_id}/member/delete")
+	public ResponseEntity<? super DelMemberResponseDto> deleteMember(
+			@PathVariable Long team_id,
+			@RequestBody DeleteMemberRequestDto delMemberRequestDto,
+			@AuthenticationPrincipal CustomUserDetails userDetails
+	){
+		return teamService.deleteMember(team_id, delMemberRequestDto.getMember_id(), userDetails.getUserId());
+	}
+
 
 	//팀원 스택 바꾸기(팀원 자신만)
 	@Operation(
@@ -183,12 +240,10 @@ public class TeamController {
 	@GetMapping("/{team_id}/calendar")
 	@Operation(
 		summary = "팀 일정 불러오기",
-		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-			required = true,
-			content = @Content(
-				schema = @Schema(implementation = CalendarRequestDto.class)
-			)
-		),
+		parameters = {
+				@Parameter(name = "year", description = "조회할 연도 (예: 2025)", example = "2025"),
+				@Parameter(name = "month", description = "조회할 월 (1~12)", example = "4")
+		},
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공(SU), 일정이 존재하지 않음(ER)",
 				content = @Content(schema = @Schema(implementation = CalendarResponseDto.class))),
@@ -197,11 +252,12 @@ public class TeamController {
 		}
 	)
 	public ResponseEntity<? super CalendarResponseDto> viewCalendar(
-		@RequestBody CalendarRequestDto calendarRequestDto, //year, month
+		@RequestParam int year,
+		@RequestParam int month,
 		@PathVariable Long team_id,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
-		return teamService.viewCalendar(team_id, userDetails.getUserId(), calendarRequestDto);
+		return teamService.viewCalendar(team_id, userDetails.getUserId(), year, month);
 	}
 
 	//팀 일정 추가

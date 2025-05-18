@@ -49,7 +49,7 @@ public class UserController {
 
     @Operation(summary = "내 프로필 수정",
             description = "bio·location·techStacks 등 변경하고 싶은 항목만 전송해 수정합니다.")
-    @PatchMapping("/me") 
+    @PatchMapping("/me")
     public ResponseEntity<ResponseDto> updateMyProfile(
 
             @RequestBody UpdateProfileRequest request,
@@ -80,7 +80,7 @@ public class UserController {
         }
         return ResponseDto.successResponse();
     }
-    
+
     @Operation(summary = "내 프로필 이미지 업로드", description = "프로필 이미지를 multipart/form-data로 업로드하거나 교체합니다.")
     @PutMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDto> updateProfileImage(

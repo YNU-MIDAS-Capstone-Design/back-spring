@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CalendarRequestDto {
-	private Integer year;
-	private Integer month;
+public class CreateTeamRequestDto {
+    private String teamName;
+    private String teamColor;
 }

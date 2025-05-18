@@ -28,6 +28,8 @@ public class Team {
 	private Long teamId;
 
 	private String teamName;
+	private String teamImage;
+	private String teamColor;
 
 	//리스트들
 	@OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE)
@@ -36,7 +38,9 @@ public class Team {
 	@OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE)
 	private List<TeamCalendar> calendarList; //팀 일정 리스트
 
-	public Team(String teamName){
+	public Team(String teamName, String teamImage, String teamColor){
 		this.teamName = teamName;
+		this.teamImage = teamImage;
+		this.teamColor = teamColor;
 	}
 }

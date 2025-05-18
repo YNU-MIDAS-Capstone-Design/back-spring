@@ -36,7 +36,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/api/users/check-nickname",
                                 "/api/users/check-email",
-                                "/api/view/**" //로그인 안해도 이미지 확인 가능
+                                "/api/view/**",  //로그인 안해도 이미지 확인 가능
+                                "/api/project/scores"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
