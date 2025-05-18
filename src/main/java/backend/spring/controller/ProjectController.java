@@ -127,6 +127,14 @@ public class ProjectController {
         return projectService.getApplicants(projectId, userDetails.getUser());
     }
 
+    @Operation(summary = "프로젝트 지원 취소", description = "로그인한 유저가 해당 프로젝트에 대한 지원을 취소합니다.")
+    @DeleteMapping("/{projectId}/cancel")
+    public ResponseEntity<? extends ResponseDto> cancelApplication(
+            @PathVariable Long projectId,
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return projectService.cancelApplication(projectId, userDetails.getUser());
+    }
+
 
 }
-

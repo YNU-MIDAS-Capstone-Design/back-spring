@@ -1,20 +1,28 @@
 package backend.spring.service;
 
-import backend.spring.entity.TechStack;
+import backend.spring.dto.object.ViewProjectDto;
 import backend.spring.dto.request.SignupRequest;
-import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.dto.request.UpdateProfileRequest;
+import backend.spring.dto.object.UserProfileResponse;
 import backend.spring.dto.response.SignupResponseDto;
+import backend.spring.entity.TechStack;
 import backend.spring.entity.User;
 import backend.spring.entity.enums.Stack;
+import backend.spring.entity.Project;
+import backend.spring.repository.ProjectLikeRepository;
+import backend.spring.repository.ProjectRepository;
 import backend.spring.repository.UserRepository;
+import backend.spring.repository.ProjectApplicantRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -22,9 +30,26 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    private final FileService fileService;
+
+    private final ProjectLikeRepository projectLikeRepository;
+    private final ProjectApplicantRepository projectApplicantRepository;
+    private final ProjectRepository projectRepository;
+
+
+
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       FileService fileService,
+                       ProjectLikeRepository projectLikeRepository,
+                       ProjectApplicantRepository projectApplicantRepository,
+                       ProjectRepository projectRepository) {
+        this.userRepository             = userRepository;
+        this.passwordEncoder            = passwordEncoder;
+        this.fileService                = fileService;
+        this.projectLikeRepository      = projectLikeRepository;
+        this.projectApplicantRepository = projectApplicantRepository;
+        this.projectRepository          = projectRepository;
     }
 
     @Transactional
@@ -46,19 +71,23 @@ public class UserService {
                 .location(request.getLocation())
                 .sns(request.getSns())
                 .bio(request.getBio())
-                .techStacks(techStacks) // 생성 시 빈 리스트 주입
+                .mbti(request.getMbti())
+                .job(request.getJob())
+                .techStacks(techStacks)
                 .build();
 
-        for (Stack stack : request.getTechStacks()) {
-            TechStack ts = new TechStack();
-            ts.setName(stack);
-            ts.setUser(user);
-            techStacks.add(ts);
-        }
+        Optional.ofNullable(request.getTechStacks())
+                .orElse(List.of())
+                .forEach(stackEnum -> {
+                    TechStack ts = new TechStack(stackEnum);
+                    ts.setUser(user);
+                    techStacks.add(ts);
+                });
 
         userRepository.save(user);
         return SignupResponseDto.signupSuccess();
     }
+
 
     @Transactional(readOnly = true)
     public UserProfileResponse getUserProfile(String nickname) {
@@ -79,20 +108,73 @@ public class UserService {
         User user = userRepository.findByNickname(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setBio(request.getBio());
-        user.setLocation(request.getLocation());
-        user.setSns(request.getSns());
-        user.getTechStacks().clear();
 
-        List<TechStack> newStacks = new ArrayList<>();
-        for (Stack stack : request.getTechStacks()) {
-            TechStack ts = new TechStack();
-            ts.setName(stack);
-            ts.setUser(user);
-            newStacks.add(ts);
+        if (request.getBio() != null)      user.setBio(request.getBio());
+        if (request.getLocation() != null) user.setLocation(request.getLocation());
+        if (request.getSns() != null)      user.setSns(request.getSns());
+        if (request.getMbti() != null)     user.setMbti(request.getMbti());
+        if (request.getJob() != null)      user.setJob(request.getJob());
+
+        if (request.getTechStacks() == null || request.getTechStacks().isEmpty()) {
+            user.getTechStacks().clear();
+        } else {
+            if (user.getTechStacks() == null) {
+                user.setTechStacks(new ArrayList<>());
+            } else {
+                user.getTechStacks().clear();
+            }
+
+            // 새롭게 전달된 기술 스택으로 리스트를 채웁니다.
+            for (Stack stackEnum : request.getTechStacks()) {
+                TechStack ts = new TechStack(stackEnum);
+                ts.setUser(user);
+                user.getTechStacks().add(ts);
+            }
         }
-        user.getTechStacks().addAll(newStacks);
+
     }
+
+
+    /**
+     * 프로필 이미지 업로드 후 filename을 User 엔티티에 저장
+     */
+    @Transactional
+    public void updateMyProfileImage(MultipartFile imageFile, String username) {
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new RuntimeException("업로드할 파일을 선택해 주세요");
+        }
+
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String filename;
+        try {
+            filename = fileService.file_upload("profile_image", imageFile);
+        } catch (Exception e) {
+            throw new RuntimeException("프로필 이미지 저장에 실패했습니다", e);
+        }
+        if (filename == null || filename.isBlank()) {
+            throw new RuntimeException("프로필 이미지 저장에 실패했습니다");
+        }
+
+        user.setProfileImageFilename(filename);
+    }
+
+    @Transactional
+    public void deleteMyProfileImage(String username) {
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String filename = user.getProfileImageFilename();
+        if (filename != null && !filename.isBlank()) {
+            boolean deleted = fileService.file_delete("profile_image", filename);
+            if (!deleted) {
+                throw new RuntimeException("Failed to delete profile image file");
+            }
+            user.setProfileImageFilename(null);
+        }
+    }
+
     @Transactional(readOnly = true)
     public boolean isEmailDuplicate(String email) {
         return userRepository.existsByEmail(email);
@@ -102,5 +184,68 @@ public class UserService {
     public boolean isNicknameDuplicate(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
+
+    @Transactional(readOnly = true)
+    public List<ViewProjectDto> getLikedProjects(String username) {
+        User me = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+        return projectLikeRepository.findAllByUser(me).stream()
+                .map(pl -> {
+                    Project p = pl.getProject();
+                    List<Stack> stacks = p.getStackList().stream()
+                            .map(ps -> ps.getStack())
+                            .toList();
+                    return new ViewProjectDto(
+                            p.getProjectId(),
+                            p.getTitle(),
+                            p.getContent(),
+                            stacks
+                    );
+                })
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ViewProjectDto> getAppliedProjects(String username) {
+        User me = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+        return projectApplicantRepository.findAllByUser(me).stream()
+                .map(pa -> {
+                    Project p = pa.getProject();
+                    List<Stack> stacks = p.getStackList().stream()
+                            .map(ps -> ps.getStack())
+                            .toList();
+                    return new ViewProjectDto(
+                            p.getProjectId(),
+                            p.getTitle(),
+                            p.getContent(),
+                            stacks
+                    );
+                })
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ViewProjectDto> getMyProjects(String username) {
+        User me = userRepository.findByNickname(username)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+        return projectRepository.findAllByUser(me).stream()
+                .map(p -> {
+                    List<Stack> stacks = p.getStackList().stream()
+                            .map(ps -> ps.getStack())
+                            .toList();
+                    return new ViewProjectDto(
+                            p.getProjectId(),
+                            p.getTitle(),
+                            p.getContent(),
+                            stacks
+                    );
+                })
+                .toList();
+    }
+
 
 }
