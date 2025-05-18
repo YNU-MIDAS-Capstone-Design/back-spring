@@ -3,10 +3,14 @@ package backend.spring.dto.object;
 import backend.spring.entity.Project;
 import backend.spring.entity.enums.Location;
 import backend.spring.entity.enums.Processing;
+import backend.spring.entity.enums.Stack;
+import backend.spring.entity.ProjectStack;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Schema(description = "프로젝트 상세 정보 DTO")
@@ -14,7 +18,7 @@ public class ProjectDetailDto {
 
     private Long projectId;
     private String title;
-    private String description;
+    //private String description;
     private String content;
     private Processing processing;
     private String recruitmentField;
@@ -24,11 +28,12 @@ public class ProjectDetailDto {
     private Integer likeCount;
     private Integer viewCount;
     private LocalDateTime createdAt;
+    private List<Stack> stackList;
 
     public ProjectDetailDto(Project project) {
         this.projectId = project.getProjectId();
         this.title = project.getTitle();
-        this.description = project.getDescription();
+        //this.description = project.getDescription();
         this.content = project.getContent();
         this.processing = project.getProcessing();
         this.recruitmentField = project.getRecruitmentField();
@@ -38,5 +43,9 @@ public class ProjectDetailDto {
         this.likeCount = project.getLikeCount();
         this.viewCount = project.getViewCount();
         this.createdAt = project.getCreated_at();
+        this.stackList = project.getStackList().stream()
+                .map(ProjectStack::getStack)
+                .collect(Collectors.toList());
+
     }
 }

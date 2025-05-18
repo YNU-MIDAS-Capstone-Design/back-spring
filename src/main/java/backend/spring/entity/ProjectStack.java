@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.stream.Collectors;
+
 @Entity
 @Table(name = "project_stack")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
