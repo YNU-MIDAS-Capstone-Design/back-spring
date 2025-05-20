@@ -38,7 +38,10 @@ public class UserProfileResponse {
 
     private List<String> teams;
 
-    @Schema(description = "프로필 이미지 URL", example = "http://localhost:8080/api/view/profile_image/123e4567-e89b-12d3-a456-426614174000_profile.png")
+    @Schema(
+            description = "프로필 이미지 URL",
+            example = "http://localhost:8080/api/view/profile_image,123e4567-e89b-12d3-a456-426614174000.png"
+    )
     private String profileImageUrl;
 
     public UserProfileResponse(User user) {
@@ -49,21 +52,20 @@ public class UserProfileResponse {
         this.sns = user.getSns();
         this.mbti = user.getMbti();
         this.job = user.getJob();
+
         this.techStacks = user.getTechStacks()
                 .stream()
                 .map(stack -> stack.getName().name())
                 .collect(Collectors.toList());
+
         this.teams = user.getTeamList().stream()
                 .map(TeamMember::getTeam)
                 .map(team -> team.getTeamName())
                 .collect(Collectors.toList());
+
         String filename = user.getProfileImageFilename();
-        if (filename != null && !filename.isBlank()) {
-            // 파일명이 있을 때만 URL 조합
-            this.profileImageUrl =
-                    "http://localhost:8080/api/view/profile_image/" + filename;
-        } else {
-            this.profileImageUrl = null;
-        }
+        this.profileImageUrl = (filename == null || filename.isBlank())
+                ? null
+                : "http://localhost:8080/api/view/profile_image," + filename;
     }
 }

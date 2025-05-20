@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import backend.spring.dto.response.ImageUrlDto;
+
 
 @Tag(name = "User API", description = "유저 관련 API")
 @RestController
@@ -83,13 +85,17 @@ public class UserController {
 
     @Operation(summary = "내 프로필 이미지 업로드", description = "프로필 이미지를 multipart/form-data로 업로드하거나 교체합니다.")
     @PutMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDto> updateProfileImage(
+    public ResponseEntity<ResponseDtoWithData<ImageUrlDto>> updateProfileImage(
             @Parameter(hidden = true)
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestPart("imageFile") MultipartFile imageFile
     ) {
-        userService.updateMyProfileImage(imageFile, userDetails.getUsername());
-        return ResponseDto.successResponse();
+        String imageUrl = userService.updateMyProfileImage(imageFile, userDetails.getUsername());
+
+
+        return ResponseEntity.ok(
+                ResponseDtoWithData.success(new ImageUrlDto(imageUrl))
+        );
     }
 
 

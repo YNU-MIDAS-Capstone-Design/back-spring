@@ -139,7 +139,7 @@ public class UserService {
      * 프로필 이미지 업로드 후 filename을 User 엔티티에 저장
      */
     @Transactional
-    public void updateMyProfileImage(MultipartFile imageFile, String username) {
+    public String updateMyProfileImage(MultipartFile imageFile, String username) {
         if (imageFile == null || imageFile.isEmpty()) {
             throw new RuntimeException("업로드할 파일을 선택해 주세요");
         }
@@ -158,6 +158,9 @@ public class UserService {
         }
 
         user.setProfileImageFilename(filename);
+        // 프론트에서 바로 사용할 최종 URL 반환
+        // ViewFileController가 profile_image,파일명” 해석
+        return "http://localhost:8080/api/view/profile_image," + filename;
     }
 
     @Transactional
