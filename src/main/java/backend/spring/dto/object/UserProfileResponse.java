@@ -1,5 +1,6 @@
 package backend.spring.dto.object;
 
+import backend.spring.entity.Team;
 import backend.spring.entity.TeamMember;
 import backend.spring.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +37,25 @@ public class UserProfileResponse {
     @Schema(description = "기술 스택 목록", example = "[\"CSS\", \"HTML\"]")
     private List<String> techStacks;
 
-    private List<String> teams;
+    @Schema(
+            description = "속한 팀 목록",
+            example =
+                    "[" +
+                            "  {" +
+                            "    \"teamId\": 1," +
+                            "    \"teamName\": \"AI 프로젝트 팀\"," +
+                            "    \"imageUrl\": \"빨강\"," +
+                            "    \"owner\": false" +
+                            "  }," +
+                            "  {" +
+                            "    \"teamId\": 2," +
+                            "    \"teamName\": \"웹 개발 팀\"," +
+                            "    \"imageUrl\": \"http://localhost:8080/api/view/team_image,864bfddf-c587-407f-9c0c-ebb23ff1090a..png\"," +
+                            "    \"owner\": false" +
+                            "  }" +
+                            "]"
+    )
+    private List<UserTeamDto> teams;
 
     @Schema(
             description = "프로필 이미지 URL",
@@ -59,8 +78,15 @@ public class UserProfileResponse {
                 .collect(Collectors.toList());
 
         this.teams = user.getTeamList().stream()
-                .map(TeamMember::getTeam)
-                .map(team -> team.getTeamName())
+                .map(tm -> {
+                    Team t = tm.getTeam();
+                    return new UserTeamDto(
+                            t.getTeamId(),
+                            t.getTeamName(),
+                            t.getTeamImage()   // URL 그대로 반환
+                            //tm.isOwner()
+                    );
+                })
                 .collect(Collectors.toList());
 
         String filename = user.getProfileImageFilename();
