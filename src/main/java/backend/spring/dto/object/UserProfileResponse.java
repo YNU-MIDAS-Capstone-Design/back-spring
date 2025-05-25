@@ -67,7 +67,7 @@ public class UserProfileResponse {
         this.email = user.getEmail();
         this.nickname = user.getNickname();
         this.bio = user.getBio();
-        this.location = user.getLocation().name();
+        this.location = user.getLocation() == null ? null : user.getLocation().name();
         this.sns = user.getSns();
         this.mbti = user.getMbti();
         this.job = user.getJob();
