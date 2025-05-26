@@ -26,15 +26,17 @@ public class TeamCalendar {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long calId;
 
-	private LocalDateTime calDate; //날짜
+	private LocalDateTime calStart;
+	private LocalDateTime calEnd;
 	private String content; //일정 내용
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "teamId")
 	private Team team;
 
-	public TeamCalendar(LocalDateTime cal_date, String content, Team team){
-		this.calDate = cal_date;
+	public TeamCalendar(LocalDateTime start, LocalDateTime end, String content, Team team){
+		this.calStart = start;
+		this.calEnd = end;
 		this.content = content;
 		this.team = team;
 	}

@@ -7,12 +7,14 @@ import lombok.Getter;
 @Getter
 public class ViewCalendarDto {
 	private Long cal_id;
-	private String date;
 	private String content;
+	private String start;
+	private String end;
 
-	public ViewCalendarDto(Long cal_id, String date, String content) {
+	public ViewCalendarDto(Long cal_id, String content, String start, String end) {
 		this.cal_id = cal_id;
-		this.date = date;
 		this.content = content;
+		this.start = start;
+		this.end = end;
 	}
 }

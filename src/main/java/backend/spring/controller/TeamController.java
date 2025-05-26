@@ -308,11 +308,11 @@ public class TeamController {
 	//팀 일정 수정
 	@PutMapping("/calendar/{cal_id}/modify")
 	@Operation(
-		summary = "팀 일정 수정",
+		summary = "팀 일정 날짜 수정",
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
 			required = true,
 			content = @Content(
-				schema = @Schema(implementation = CalendarAddRequestDto.class)
+					schema = @Schema(implementation = DateModifyRequestDto.class)
 			)
 		),
 		responses = {
@@ -323,10 +323,10 @@ public class TeamController {
 		}
 	)
 	public ResponseEntity<? super CalendarEditResponseDto> modifyCalendar(
-		@RequestBody CalendarAddRequestDto calendarAddRequestDto, //날짜, 내용
+		@RequestBody DateModifyRequestDto dateModifyRequestDto,  //날짜
 		@PathVariable Long cal_id,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
-		return teamService.modifyCalendar(cal_id, userDetails.getUserId(), calendarAddRequestDto);
+		return teamService.modifyCalendar(cal_id, userDetails.getUserId(), dateModifyRequestDto);
 	}
 }

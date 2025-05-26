@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CalendarAddRequestDto {
-	private String start;
-	private String end;
-	private String content;
+public class DateModifyRequestDto {
+    private String start;
+    private String end;
 }

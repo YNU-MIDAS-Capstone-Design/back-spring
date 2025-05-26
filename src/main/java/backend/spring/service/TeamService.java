@@ -384,7 +384,7 @@ public class TeamService {
 			// year와 month에 해당하는 날짜를 가진 것만 calendars 리스트 중에서 반환
 			List<TeamCalendar> filteredCalendars = calendars.stream()
 				.filter(calendar -> {
-					LocalDateTime date = calendar.getCalDate();
+					LocalDateTime date = calendar.getCalStart();
 					return date.getYear() == year && date.getMonthValue() == month;
 				})
 				.toList();
@@ -394,8 +394,10 @@ public class TeamService {
 
 			List<ViewCalendarDto> dates = new ArrayList<>();
 			for(TeamCalendar cal : filteredCalendars){
-				String cal_date = cal.getCalDate().format(formatter);
-				ViewCalendarDto view_cal = new ViewCalendarDto(cal.getCalId(), cal_date, cal.getContent());
+				String start = cal.getCalStart().format(formatter);
+				String end = cal.getCalEnd().format(formatter);
+
+				ViewCalendarDto view_cal = new ViewCalendarDto(cal.getCalId(), cal.getContent(), start, end);
 				dates.add(view_cal);
 			}
 
@@ -409,7 +411,7 @@ public class TeamService {
 	@Transactional
 	public ResponseEntity<? super CalendarEditResponseDto> addCalendar(Long team_id, Long user_id, CalendarAddRequestDto dto){
 		try{
-			if(dto.getCal_date() == null || dto.getCal_date().isEmpty()){
+			if(dto.getStart() == null || dto.getStart().isEmpty()){
 				return ResponseDto.missing_required_data();
 			} //수정할 데이터가 null인지 확인
 
@@ -424,9 +426,12 @@ public class TeamService {
 			}
 			Team team = options.get(); //팀이 존재하는지 확인
 
-			LocalDate date = LocalDate.parse(dto.getCal_date(), formatter);
-			LocalDateTime dateTime = date.atStartOfDay();
-			TeamCalendar new_cal = new TeamCalendar(dateTime, dto.getContent(), team);
+			LocalDate start = LocalDate.parse(dto.getStart(), formatter);
+			LocalDateTime startTime = start.atStartOfDay(); //start 일정 넣기
+			LocalDate end = LocalDate.parse(dto.getEnd(), formatter);
+			LocalDateTime endTime = end.atStartOfDay(); //end 일정 넣기
+
+			TeamCalendar new_cal = new TeamCalendar(startTime, endTime, dto.getContent(), team);
 			teamCalendarRepository.save(new_cal); //새로운 일정 저장
 
 			return CalendarEditResponseDto.success();
@@ -437,11 +442,11 @@ public class TeamService {
 	}
 
 	@Transactional
-	public ResponseEntity<? super CalendarEditResponseDto> modifyCalendar(Long cal_id, Long user_id, CalendarAddRequestDto dto){
+	public ResponseEntity<? super CalendarEditResponseDto> modifyCalendar(Long cal_id, Long user_id, DateModifyRequestDto dto){
 		try{
-			if(dto.getContent() == null || dto.getContent().isEmpty()){
+			if(dto.getStart() == null || dto.getStart().isEmpty()){
 				return CalendarEditResponseDto.missing_required_data();
-			} //수정할 데이터가 null인지 확인
+			} //수정할 일정이 null인지 확인
 
 			Optional<User> option = userRepository.findById(user_id);
 			if(option.isEmpty()) {
@@ -453,7 +458,14 @@ public class TeamService {
 				return CalendarEditResponseDto.not_existed_cal();
 			}
 			TeamCalendar calendar = options.get(); //일정이 존재하는지 확인
-			calendar.setContent(dto.getContent());  //일정 수정
+
+			LocalDate start = LocalDate.parse(dto.getStart(), formatter);
+			LocalDateTime startTime = start.atStartOfDay();
+			calendar.setCalStart(startTime); //start 일정 수정
+
+			LocalDate end = LocalDate.parse(dto.getEnd(), formatter);
+			LocalDateTime endTime = end.atStartOfDay();
+			calendar.setCalEnd(endTime); //end 일정 수정
 
 			return CalendarEditResponseDto.success();
 		} catch(Exception e){
