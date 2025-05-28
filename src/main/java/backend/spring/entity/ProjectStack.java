@@ -2,18 +2,17 @@ package backend.spring.entity;
 
 import backend.spring.entity.enums.Stack;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "project_stack")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class ProjectStack {
 
 	@Id

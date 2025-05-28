@@ -36,7 +36,6 @@ public class ProjectService {
     public Long createProject(PostProjectRequestDto requestDto, User user) {
         Project project = new Project();
         project.setTitle(requestDto.getTitle());
-//        project.setDescription(requestDto.getDescription());
         project.setContent(requestDto.getContent());
         project.setProcessing(requestDto.getProcessing());
         project.setRecruitmentField(requestDto.getRecruitmentField());
@@ -47,6 +46,16 @@ public class ProjectService {
         project.setViewCount(0);
 
         Project savedProject = projectRepository.save(project);
+
+        List<ProjectStack> projectStacks = requestDto.getStackList().stream()
+                .map(stack -> ProjectStack.builder()
+                        .project(savedProject)
+                        .stack(stack)
+                        .build())
+                .collect(Collectors.toList());
+
+        projectStackRepository.saveAll(projectStacks);
+
         return savedProject.getProjectId();
     }
 
