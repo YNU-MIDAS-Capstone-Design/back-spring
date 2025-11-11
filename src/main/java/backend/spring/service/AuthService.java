@@ -32,7 +32,10 @@ public class AuthService {
             return LoginResponseDto.fail();
         }
 
+        // 닉네임이 admin이면 관리자
+        String role = request.getNickname().equals("admin") ? "ADMIN" : "USER";
+
         String token = jwtTokenProvider.createToken(request.getNickname());
-        return LoginResponseDto.success(token);
+        return LoginResponseDto.success(token, role);
     }
 }
