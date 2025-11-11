@@ -55,6 +55,7 @@ public class AdminService {
     }
 
     // 관리자: 프로젝트 목록 조회
+    @Transactional
     public ResponseEntity<? super AdminPostSummaryResponseDto> getAllPosts(String nickname) {
         if(!nickname.equals("admin")){
             return ResponseDto.not_existed_user();
@@ -76,6 +77,7 @@ public class AdminService {
     }
 
     // 프로젝트 삭제
+    @Transactional
     public ResponseEntity< ? super AdminDelPostResponseDto> deletePostById(String nickname, Long id) {
         if(!nickname.equals("admin")){
             return ResponseDto.not_existed_user();
